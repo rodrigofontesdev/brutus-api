@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'client' => [
+        'url' => env('APP_CLIENT_URL', 'http://localhost'),
+        'redirect' => env('APP_CLIENT_REDIRECT_URL', 'http://localhost'),
+    ],
 ];

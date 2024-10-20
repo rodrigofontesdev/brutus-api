@@ -152,13 +152,14 @@ return [
     'custom' => [
         'cnpj' => [
             'size' => 'The cnpj field has an invalid format.',
-            'unique' => 'The cnpj field is being used by another subscriber.'
+            'unique' => 'The cnpj field is being used by another subscriber.',
+            'exists' => 'The cnpj provided does not matches to any user.',
         ],
         'mobile_phone' => [
             'size' => 'The mobile phone field has an invalid format.',
         ],
         'email' => [
-            'exists' => 'The email provided does not matches to any user.'
+            'exists' => 'The email provided does not matches to any user.',
         ],
     ],
 
