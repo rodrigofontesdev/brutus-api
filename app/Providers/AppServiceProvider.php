@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
                             'code' => 429,
                             'message' => 'You have reached the maximum number of requests per hour. Please wait a while to continue.',
                             'path' => '/' . $request->path(),
-                            'timestamp' => now(),
+                            'timestamp' => now()->toDateTimeString(),
                         ],
                         429,
                         $headers

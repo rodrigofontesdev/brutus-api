@@ -34,7 +34,7 @@ class SignUp extends Controller
                 'code' => 400,
                 'message' => 'The request was not accepted due to a missing required field or an error in the field format.',
                 'path' => '/' . $request->path(),
-                'timestamp' => now(),
+                'timestamp' => now()->toDateTimeString(),
                 'errors' => $validator->errors(),
             ], 400);
         }
@@ -52,7 +52,7 @@ class SignUp extends Controller
             $magicLink = new MagicLink;
             $magicLink->token = Str::uuid()->toString();
             $magicLink->user = $subscriber->id;
-            $magicLink->expires_at = Carbon::now()->addMinutes(5);
+            $magicLink->expires_at = Carbon::now()->addMinutes(5)->toDateTimeString();
             $magicLink->save();
 
             Mail::to($subscriber->email)
@@ -65,7 +65,7 @@ class SignUp extends Controller
                 'code' => 500,
                 'message' => 'Something went wrong with Brutus\'s servers. Please, contact the system admin at ' . config('mail.from.address') . '.',
                 'path' => '/' . $request->path(),
-                'timestamp' => now(),
+                'timestamp' => now()->toDateTimeString(),
                 'errors' => $error->getMessage(),
             ], 500);
         }

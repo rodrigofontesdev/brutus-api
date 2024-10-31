@@ -21,7 +21,7 @@ class SubscriberFactory extends Factory
             'state' => fake()->randomElement(['SP', 'RJ', 'MG']),
             'mei' => fake()->randomElement(['MEI-GERAL', 'MEI-TAC']),
             'secret_word' => fake()->word(),
-            'email_verified_at' => now(),
+            'email_verified_at' => now()->toDateTimeString(),
         ];
     }
 

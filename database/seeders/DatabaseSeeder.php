@@ -13,15 +13,16 @@ class DatabaseSeeder extends Seeder
         Subscriber::factory()
             ->count(5)
             ->has(MagicLink::factory()->sequence(
-                ['used_at' => now()],
-                ['used_at' => null]
+                ['used_at' => null],
+                ['used_at' => now()->toDateTimeString()]
             ))
             ->withIncompleteProfile()
             ->create();
 
         Subscriber::factory()
             ->count(5)
-            ->has(MagicLink::factory())
+            ->has(MagicLink::factory()->used())
+            ->has(MagicLink::factory()->used()->expired())
             ->create();
     }
 }

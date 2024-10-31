@@ -13,22 +13,22 @@ class MagicLinkFactory extends Factory
     {
         return [
             'token' => fake()->uuid(),
-            'used_at' => now(),
-            'expires_at' => now()->addMinutes(5)
+            'used_at' => null,
+            'expires_at' => now()->addMinutes(5)->toDateTimeString()
         ];
     }
 
-    public function unused(): static
+    public function used(): static
     {
         return $this->state(fn(array $attributes) => [
-            'used_at' => null,
+            'used_at' => now()->toDateTimeString()
         ]);
     }
 
     public function expired(): static
     {
         return $this->state(fn(array $attributes) => [
-            'expires_at' => now()->subDay()
+            'expires_at' => now()->subDay()->toDateTimeString()
         ]);
     }
 }
