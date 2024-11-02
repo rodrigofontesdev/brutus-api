@@ -134,7 +134,7 @@ describe('Sign Up', function () {
 
         $response->assertStatus(201);
         $response->assertJson(
-            fn(AssertableJson $json) => $json->where('cnpj', $subscriber['cnpj'])
+            fn (AssertableJson $json) => $json->where('cnpj', $subscriber['cnpj'])
                 ->where('full_name', $subscriber['full_name'])
                 ->where('mobile_phone', $subscriber['mobile_phone'])
                 ->where('email', $subscriber['email'])

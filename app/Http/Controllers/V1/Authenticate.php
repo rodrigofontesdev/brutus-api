@@ -22,10 +22,10 @@ class Authenticate extends Controller
                 'required',
                 'uuid',
                 'exists:magic_links,token',
-                new IsTokenUsed,
-                new IsTokenExpired
+                new IsTokenUsed(),
+                new IsTokenExpired(),
             ],
-            'redirect' => 'url:https'
+            'redirect' => 'url:https',
         ]);
 
         if ($validator->fails()) {
@@ -33,7 +33,7 @@ class Authenticate extends Controller
                 'type' => 'INVALID_REQUEST_ERROR',
                 'code' => 400,
                 'message' => 'The request was not accepted due to a missing required field or an error in the field format.',
-                'path' => '/' . $request->path(),
+                'path' => '/'.$request->path(),
                 'timestamp' => now()->toDateTimeString(),
                 'errors' => $validator->errors(),
             ], 400);
@@ -52,15 +52,15 @@ class Authenticate extends Controller
 
             return Response::json([
                 'message' => 'User successfully authenticated.',
-                'redirect' => $validated->redirect
+                'redirect' => $validated->redirect,
             ]);
-        } catch (QueryException | \Throwable $error) {
+        } catch (QueryException|\Throwable $error) {
             return Response::json([
                 'type' => 'API_ERROR',
                 'code' => 500,
-                'message' => 'Something went wrong with Brutus\'s servers. Please, contact the system admin at ' . config('mail.from.address') . '.',
-                'path' => '/' . $request->path(),
-                'timestamp' => now()->toDateTimeString()
+                'message' => 'Something went wrong with Brutus\'s servers. Please, contact the system admin at '.config('mail.from.address').'.',
+                'path' => '/'.$request->path(),
+                'timestamp' => now()->toDateTimeString(),
             ], 500);
         }
     }

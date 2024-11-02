@@ -68,7 +68,7 @@ describe('Authenticate', function () {
         $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
         $payload = [
             'token' => $subscriber->latestMagicLink->token,
-            'redirect' => $this->redirectTo
+            'redirect' => $this->redirectTo,
         ];
 
         $response = $this->postJson($this->endpoint, $payload);
@@ -78,7 +78,7 @@ describe('Authenticate', function () {
         $response->assertJson(['redirect' => $this->redirectTo]);
         $this->assertDatabaseHas('magic_links', [
             'token' => $payload['token'],
-            'used_at' => now()->toDateTimeString()
+            'used_at' => now()->toDateTimeString(),
         ]);
     });
 });

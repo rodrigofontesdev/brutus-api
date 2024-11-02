@@ -10,9 +10,12 @@ use Illuminate\Queue\SerializesModels;
 
 class ConfirmAccountCreated extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
-    public function __construct(private string $link) {}
+    public function __construct(private string $link)
+    {
+    }
 
     public function envelope(): Envelope
     {

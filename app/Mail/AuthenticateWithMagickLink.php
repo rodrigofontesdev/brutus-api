@@ -10,9 +10,12 @@ use Illuminate\Queue\SerializesModels;
 
 class AuthenticateWithMagickLink extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
-    public function __construct(private string $link, private string $secretWord) {}
+    public function __construct(private string $link, private string $secretWord)
+    {
+    }
 
     public function envelope(): Envelope
     {
@@ -27,7 +30,7 @@ class AuthenticateWithMagickLink extends Mailable
             markdown: 'emails.authenticate-with-magic-link',
             with: [
                 'link' => $this->link,
-                'secretWord' => $this->secretWord
+                'secretWord' => $this->secretWord,
             ]
         );
     }

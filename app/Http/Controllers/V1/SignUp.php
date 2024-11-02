@@ -33,7 +33,7 @@ class SignUp extends Controller
                 'type' => 'INVALID_REQUEST_ERROR',
                 'code' => 400,
                 'message' => 'The request was not accepted due to a missing required field or an error in the field format.',
-                'path' => '/' . $request->path(),
+                'path' => '/'.$request->path(),
                 'timestamp' => now()->toDateTimeString(),
                 'errors' => $validator->errors(),
             ], 400);
@@ -42,14 +42,14 @@ class SignUp extends Controller
         try {
             $validated = $validator->safe();
 
-            $subscriber = new Subscriber;
+            $subscriber = new Subscriber();
             $subscriber->email = $validated->email;
             $subscriber->full_name = $validated->full_name;
             $subscriber->cnpj = $validated->cnpj;
             $subscriber->mobile_phone = $validated->mobile_phone;
             $subscriber->save();
 
-            $magicLink = new MagicLink;
+            $magicLink = new MagicLink();
             $magicLink->token = Str::uuid()->toString();
             $magicLink->user = $subscriber->id;
             $magicLink->expires_at = Carbon::now()->addMinutes(5)->toDateTimeString();
@@ -59,12 +59,12 @@ class SignUp extends Controller
                 ->send(new ConfirmAccountCreated(link: $subscriber->latestMagicLink->fullUrl()));
 
             return Response::json($subscriber, 201);
-        } catch (QueryException | CredentialsException | TransportException $error) {
+        } catch (QueryException|CredentialsException|TransportException $error) {
             return Response::json([
                 'type' => 'API_ERROR',
                 'code' => 500,
-                'message' => 'Something went wrong with Brutus\'s servers. Please, contact the system admin at ' . config('mail.from.address') . '.',
-                'path' => '/' . $request->path(),
+                'message' => 'Something went wrong with Brutus\'s servers. Please, contact the system admin at '.config('mail.from.address').'.',
+                'path' => '/'.$request->path(),
                 'timestamp' => now()->toDateTimeString(),
                 'errors' => $error->getMessage(),
             ], 500);

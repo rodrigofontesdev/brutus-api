@@ -17,7 +17,10 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Subscriber extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasUuids, SoftDeletes;
+    use HasApiTokens;
+    use HasFactory;
+    use HasUuids;
+    use SoftDeletes;
 
     protected $table = 'users';
 
@@ -44,7 +47,7 @@ class Subscriber extends Authenticatable
     protected function cnpj(): Attribute
     {
         return Attribute::make(
-            set: fn(string $value) => Str::replaceMatches(
+            set: fn (string $value) => Str::replaceMatches(
                 pattern: '/[^A-Za-z0-9]/',
                 replace: '',
                 subject: $value
@@ -55,7 +58,7 @@ class Subscriber extends Authenticatable
     protected function mobilePhone(): Attribute
     {
         return Attribute::make(
-            set: fn(string $value) => Str::replaceMatches(
+            set: fn (string $value) => Str::replaceMatches(
                 pattern: '/[^0-9]/',
                 replace: '',
                 subject: $value
@@ -66,14 +69,14 @@ class Subscriber extends Authenticatable
     protected function state(): Attribute
     {
         return Attribute::make(
-            set: fn(?string $value) => $value ? Str::upper($value) : null
+            set: fn (?string $value) => $value ? Str::upper($value) : null
         );
     }
 
     protected function mei(): Attribute
     {
         return Attribute::make(
-            set: fn(?string $value) => $value ? Str::upper($value) : null
+            set: fn (?string $value) => $value ? Str::upper($value) : null
         );
     }
 

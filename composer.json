@@ -16,8 +16,8 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "friendsofphp/php-cs-fixer": "^3.64",
         "laravel/pint": "^1.18",
-        "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.0",
         "pestphp/pest": "^3.2",
@@ -50,7 +50,9 @@
             "@php artisan key:generate --ansi",
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
-        ]
+        ],
+        "check-style": "vendor/bin/php-cs-fixer fix --diff --verbose --dry-run .",
+        "fix-style": "vendor/bin/php-cs-fixer fix ."
     },
     "extra": {
         "laravel": {

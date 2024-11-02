@@ -10,7 +10,9 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+    }
 
     public function boot(): void
     {
@@ -23,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
                             'type' => 'INVALID_REQUEST_ERROR',
                             'code' => 429,
                             'message' => 'You have reached the maximum number of requests per hour. Please wait a while to continue.',
-                            'path' => '/' . $request->path(),
+                            'path' => '/'.$request->path(),
                             'timestamp' => now()->toDateTimeString(),
                         ],
                         429,

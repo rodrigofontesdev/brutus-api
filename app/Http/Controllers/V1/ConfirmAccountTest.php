@@ -54,7 +54,7 @@ describe('Confirm Account', function () {
 
             while ($i <= 50) {
                 $this->postJson($this->endpoint, []);
-                $i++;
+                ++$i;
             }
 
             $this->postJson($this->endpoint, [])->assertTooManyRequests();
