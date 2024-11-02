@@ -12,7 +12,6 @@ class MagicLinkFactory extends Factory
     public function definition(): array
     {
         return [
-            'token' => fake()->uuid(),
             'used_at' => null,
             'expires_at' => now()->addMinutes(5)->toDateTimeString()
         ];
