@@ -61,7 +61,7 @@ class SignIn extends Controller
                     )
                 );
 
-            return Response::json([], 204);
+            return Response::json(status: 204);
         } catch (QueryException|CredentialsException|TransportException $error) {
             return Response::json([
                 'type' => 'API_ERROR',

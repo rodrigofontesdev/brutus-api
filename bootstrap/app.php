@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
-        $middleware->group('api', [
+        $middleware->api(append: [
             Illuminate\Session\Middleware\StartSession::class,
         ]);
     })

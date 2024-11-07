@@ -55,7 +55,7 @@ class ConfirmAccount extends Controller
             Mail::to($subscriber->email)
                 ->send(new ConfirmAccountCreated(link: $subscriber->latestMagicLink->fullUrl()));
 
-            return Response::json([], 204);
+            return Response::json(status: 204);
         } catch (QueryException|CredentialsException|TransportException $error) {
             return Response::json([
                 'type' => 'API_ERROR',
