@@ -26,8 +26,8 @@ class AppServiceProvider extends ServiceProvider
                 ->response(function (Request $request, array $headers) {
                     return Response::json(
                         [
-                            'type' => 'INVALID_REQUEST_ERROR',
-                            'code' => 429,
+                            'type' => 'RATE_LIMIT_ERROR',
+                            'code' => 'rate_limit',
                             'message' => 'You have reached the maximum number of requests per hour. Please wait a while to continue.',
                             'path' => '/'.$request->path(),
                             'timestamp' => now()->toDateTimeString(),
