@@ -6,8 +6,8 @@ use Illuminate\Support\Str;
 
 describe('Authenticate', function () {
     beforeEach(function () {
-        $this->endpoint = '/api/v1/authenticate';
-        $this->redirectTo = 'https://app.example.com';
+        $this->endpoint = route('v1.authenticate');
+        $this->redirectTo = 'https://example.com';
     });
 
     it('should return a bad request when token is missing', function () {

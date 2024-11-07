@@ -5,7 +5,7 @@ use App\Models\Subscriber;
 
 describe('Confirm Account', function () {
     beforeEach(function () {
-        $this->endpoint = '/api/v1/confirm-account';
+        $this->endpoint = route('v1.confirm-account');
     });
 
     it('should return a bad request if missing a required field', function () {

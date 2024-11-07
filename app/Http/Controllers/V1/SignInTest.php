@@ -5,7 +5,7 @@ use App\Models\Subscriber;
 
 describe('Sign In', function () {
     beforeEach(function () {
-        $this->endpoint = '/api/v1/sign-in';
+        $this->endpoint = route('v1.sign-in');
     });
 
     it('should return a bad request if missing a required field', function () {

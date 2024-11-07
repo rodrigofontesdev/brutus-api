@@ -6,7 +6,7 @@ use Illuminate\Testing\Fluent\AssertableJson;
 
 describe('Sign Up', function () {
     beforeEach(function () {
-        $this->endpoint = '/api/v1/sign-up';
+        $this->endpoint = route('v1.sign-up');
         $this->subscriber = [
             'cnpj' => '45536395000180',
             'full_name' => 'John Doe',

@@ -5,7 +5,7 @@ use App\Models\Subscriber;
 
 describe('Sign Out', function () {
     beforeEach(function () {
-        $this->endpoint = route('sign-out');
+        $this->endpoint = route('v1.sign-out');
     });
 
     it('should return a permission error if the user is not authenticated', function () {
