@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\V1\Authenticate;
-use App\Http\Controllers\V1\ConfirmAccount;
 use App\Http\Controllers\V1\SignIn;
 use App\Http\Controllers\V1\SignOut;
 use App\Http\Controllers\V1\SignUp;
@@ -16,10 +15,6 @@ Route::name('v1.')
         Route::post('/sign-in', SignIn::class)
             ->middleware('throttle:authenticate')
             ->name('sign-in');
-
-        Route::post('/confirm-account', ConfirmAccount::class)
-            ->middleware('throttle:authenticate')
-            ->name('confirm-account');
 
         Route::post('/authenticate', Authenticate::class)
             ->name('authenticate');
