@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->char('state', 2)->nullable();
             $table->string('mei', 20)->nullable();
             $table->string('secret_word', 50)->nullable();
-            $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

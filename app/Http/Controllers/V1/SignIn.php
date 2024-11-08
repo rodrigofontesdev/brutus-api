@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Mail\AuthenticateWithMagickLink;
 use App\Models\MagicLink;
 use App\Models\Subscriber;
-use Aws\Exception\CredentialsException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,12 +38,8 @@ class SignIn extends Controller
             $validated = $validator->safe();
 
             $subscriber = Subscriber::where('cnpj', $validated->cnpj)
-                ->select(
-                    'id',
-                    'email',
-                    'secret_word',
-                    'email_verified_at'
-                )->firstOrFail();
+                ->select('id', 'email', 'secret_word')
+                ->firstOrFail();
 
             $magicLink = new MagicLink([
                 'token' => Str::uuid()->toString(),
@@ -62,7 +57,7 @@ class SignIn extends Controller
                 );
 
             return Response::json(status: 204);
-        } catch (QueryException|CredentialsException|TransportException $error) {
+        } catch (QueryException|TransportException $error) {
             return Response::json([
                 'type' => 'API_ERROR',
                 'code' => 500,

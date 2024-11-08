@@ -21,15 +21,7 @@ class SubscriberFactory extends Factory
             'state' => fake()->randomElement(['SP', 'RJ', 'MG']),
             'mei' => fake()->randomElement(['MEI-GERAL', 'MEI-TAC']),
             'secret_word' => fake()->word(),
-            'email_verified_at' => now()->toDateTimeString(),
         ];
-    }
-
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 
     public function withIncompleteProfile(): static

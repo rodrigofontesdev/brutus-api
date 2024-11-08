@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
-use App\Mail\ConfirmAccountCreated;
+use App\Mail\NewlyRegisteredSubscriber;
 use App\Models\MagicLink;
 use App\Models\Subscriber;
-use Aws\Exception\CredentialsException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -56,10 +55,14 @@ class SignUp extends Controller
             $magicLink->save();
 
             Mail::to($subscriber->email)
-                ->send(new ConfirmAccountCreated(link: $subscriber->latestMagicLink->fullUrl()));
+                ->send(
+                    new NewlyRegisteredSubscriber(
+                        link: $subscriber->latestMagicLink->fullUrl(),
+                    )
+                );
 
             return Response::json($subscriber, 201);
-        } catch (QueryException|CredentialsException|TransportException $error) {
+        } catch (QueryException|TransportException $error) {
             return Response::json([
                 'type' => 'API_ERROR',
                 'code' => 500,

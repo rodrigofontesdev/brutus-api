@@ -1,9 +1,5 @@
 <x-mail::message>
-<x-mail::panel>
-    **{{$secretWord}}**
-</x-mail::panel>
-
-# Access Your Account
+# Welcome
 
 Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum quo deserunt blanditiis nesciunt labore, dolor illo alias tempora provident!
 

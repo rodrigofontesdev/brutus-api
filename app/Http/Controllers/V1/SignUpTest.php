@@ -1,6 +1,6 @@
 <?php
 
-use App\Mail\ConfirmAccountCreated;
+use App\Mail\NewlyRegisteredSubscriber;
 use App\Models\Subscriber;
 use Illuminate\Testing\Fluent\AssertableJson;
 
@@ -121,13 +121,13 @@ describe('Sign Up', function () {
             $response = $this->postJson($this->endpoint, $subscriber);
 
             $token = $response['latest_magic_link']['token'];
-            $mail = new ConfirmAccountCreated(link: $token);
+            $mail = new NewlyRegisteredSubscriber(link: $token);
 
             $mail->assertSeeInHtml($token);
         }
     );
 
-    it('should return a successful response when the resource is created', function () {
+    it('should return a successful response if the subscriber is created', function () {
         $subscriber = $this->subscriber;
 
         $response = $this->postJson($this->endpoint, $subscriber);

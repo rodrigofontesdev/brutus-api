@@ -33,13 +33,29 @@ describe('Sign In', function () {
         $response->assertInvalid(['cnpj' => 'The cnpj provided does not matches to any user.']);
     });
 
-    it('should send an email with the magic link when an subscriber is verified', function () {
+    it(
+        'should return an error if the endpoint reached the maximum number of requests per hour',
+        function () {
+            $i = 0;
+
+            while ($i <= 50) {
+                $this->postJson($this->endpoint, []);
+                ++$i;
+            }
+
+            $response = $this->postJson($this->endpoint, []);
+
+            $response->assertTooManyRequests();
+        }
+    );
+
+    it('should send an email with the magic link to the user', function () {
         $subscriberFactory = Subscriber::factory()->create();
         $credential = ['cnpj' => $subscriberFactory->cnpj];
 
         $response = $this->postJson($this->endpoint, $credential);
 
-        $subscriber = Subscriber::where('cnpj', $credential['cnpj'])->firstOrFail();
+        $subscriber = Subscriber::find($subscriberFactory->id);
         $magicLink = $subscriber->latestMagicLink->fullUrl();
         $mail = new AuthenticateWithMagickLink(
             link: $magicLink,
@@ -50,18 +66,4 @@ describe('Sign In', function () {
         $mail->assertSeeInHtml($subscriber->secret_word);
         $mail->assertSeeInHtml($magicLink);
     });
-
-    it(
-        'should return an error if the endpoint reached the maximum number of requests per hour',
-        function () {
-            $i = 1;
-
-            while ($i <= 50) {
-                $this->postJson($this->endpoint, []);
-                ++$i;
-            }
-
-            $this->postJson($this->endpoint, [])->assertTooManyRequests();
-        }
-    );
 });

@@ -20,7 +20,6 @@ class SubscriberResource extends JsonResource
             'sate' => $this->state,
             'secret_word' => $this->secret_word,
             'mei' => $this->mei,
-            'email_verified_at' => $this->email_verified_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
