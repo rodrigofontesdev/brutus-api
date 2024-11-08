@@ -54,7 +54,7 @@ class Authenticate extends Controller
                 'message' => 'User successfully authenticated.',
                 'redirect' => $validated->redirect,
             ]);
-        } catch (QueryException|\Throwable $error) {
+        } catch (QueryException $error) {
             return Response::json([
                 'type' => 'API_ERROR',
                 'code' => 500,

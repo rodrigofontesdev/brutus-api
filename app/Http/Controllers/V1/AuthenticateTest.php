@@ -74,8 +74,19 @@ describe('Authenticate', function () {
         $response = $this->postJson($this->endpoint, $payload);
 
         $response->assertStatus(200);
-        $response->assertCookie(config('session.cookie'));
-        $response->assertJson(['redirect' => $this->redirectTo]);
+        $this->assertAuthenticated('web');
+    });
+
+    it('should mark magic link as used if the user authenticates successfully', function () {
+        $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
+        $payload = [
+            'token' => $subscriber->latestMagicLink->token,
+            'redirect' => $this->redirectTo,
+        ];
+
+        $this->postJson($this->endpoint, $payload);
+
+        $this->assertAuthenticated('web');
         $this->assertDatabaseHas('magic_links', [
             'token' => $payload['token'],
             'used_at' => now()->toDateTimeString(),
