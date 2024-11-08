@@ -52,8 +52,8 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "check-style": "vendor/bin/php-cs-fixer fix --diff --verbose --dry-run .",
-        "fix-style": "vendor/bin/php-cs-fixer fix ."
+        "check-style": "vendor/bin/php-cs-fixer fix --diff --verbose --dry-run --config=.php-cs-fixer.dist.php",
+        "fix-style": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
     },
     "extra": {
         "laravel": {
