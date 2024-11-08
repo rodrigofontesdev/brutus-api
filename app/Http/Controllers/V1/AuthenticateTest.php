@@ -2,6 +2,7 @@
 
 use App\Models\MagicLink;
 use App\Models\Subscriber;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 describe('Authenticate', function () {
@@ -91,5 +92,19 @@ describe('Authenticate', function () {
             'token' => $payload['token'],
             'used_at' => now()->toDateTimeString(),
         ]);
+    });
+
+    it('should expire user\'s session after 24 hours', function () {
+        $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
+        $payload = [
+            'token' => $subscriber->latestMagicLink->token,
+            'redirect' => $this->redirectTo,
+        ];
+
+        $response = $this->postJson($this->endpoint, $payload);
+
+        Carbon::setTestNow(now()->addHours(24));
+        $response->assertCookieExpired(config('session.cookie'));
+        Carbon::setTestNow();
     });
 });
