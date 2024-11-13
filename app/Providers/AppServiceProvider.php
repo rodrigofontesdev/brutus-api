@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Notifications\QueueHasLongWaitTime;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Queue\Events\QueueBusy;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\ServiceProvider;
@@ -32,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
                         $headers
                     );
                 });
+        });
+
+        Event::listen(function (QueueBusy $event) {
+            Notification::route('mail', config('mail.admin'))
+                    ->notify(new QueueHasLongWaitTime($event));
         });
     }
 }
