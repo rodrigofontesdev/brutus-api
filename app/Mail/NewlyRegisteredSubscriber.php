@@ -2,19 +2,24 @@
 
 namespace App\Mail;
 
+use App\Models\MagicLink;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewlyRegisteredSubscriber extends Mailable
+class NewlyRegisteredSubscriber extends Mailable implements ShouldQueue
 {
     use Queueable;
     use SerializesModels;
 
-    public function __construct(private string $link)
+    public $tries = 3;
+
+    public function __construct(private MagicLink $magicLink)
     {
+        $this->afterCommit();
     }
 
     public function envelope(): Envelope
@@ -28,7 +33,7 @@ class NewlyRegisteredSubscriber extends Mailable
     {
         return new Content(
             markdown: 'emails.newly-registered-subscriber',
-            with: ['link' => $this->link]
+            with: ['link' => $this->magicLink->fullUrl()]
         );
     }
 }

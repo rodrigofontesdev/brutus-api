@@ -152,7 +152,7 @@ return [
     'custom' => [
         'cnpj' => [
             'size' => 'The cnpj field has an invalid format.',
-            'unique' => 'The cnpj field is being used by another subscriber.',
+            'unique' => 'The cnpj has already been used by another user.',
             'exists' => 'The cnpj provided does not matches to any user.',
         ],
         'mobile_phone' => [
