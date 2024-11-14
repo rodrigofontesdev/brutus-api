@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MagicLink extends Model
 {
     use HasFactory;
     use HasUuids;
+    use Prunable;
 
     protected $primaryKey = 'token';
 
@@ -36,5 +39,10 @@ class MagicLink extends Model
         $token = $this->token;
 
         return "{$hostUrl}/authenticate/{$token}&redirect={$redirectUrl}";
+    }
+
+    public function prunable(): Builder
+    {
+        return static::where('expires_at', '<', now()->toDateString());
     }
 }
