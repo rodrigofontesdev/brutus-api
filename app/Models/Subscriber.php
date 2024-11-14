@@ -25,6 +25,11 @@ class Subscriber extends Authenticatable
         'role' => 'subscriber',
     ];
 
+    protected $hidden = [
+        'email',
+        'secret_word',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<MagicLink, $this>
      */

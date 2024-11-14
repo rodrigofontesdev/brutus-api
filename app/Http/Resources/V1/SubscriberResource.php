@@ -7,6 +7,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class SubscriberResource extends JsonResource
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [
@@ -17,9 +20,9 @@ class SubscriberResource extends JsonResource
             'cnpj' => $this->cnpj,
             'mobile_phone' => $this->mobile_phone,
             'city' => $this->city,
-            'sate' => $this->state,
-            'secret_word' => $this->secret_word,
+            'state' => $this->state,
             'mei' => $this->mei,
+            'secret_word' => $this->secret_word,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,

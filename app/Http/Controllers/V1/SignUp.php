@@ -6,6 +6,7 @@ use App\Exceptions\V1\ApiErrorException;
 use App\Helpers\Generator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\SignUpRequest;
+use App\Http\Resources\V1\SubscriberResource;
 use App\Mail\NewlyRegisteredSubscriber;
 use App\Models\MagicLink;
 use App\Models\Subscriber;
@@ -39,7 +40,7 @@ class SignUp extends Controller
 
         Log::info(self::class.':: Finishing to create a new subscriber.');
 
-        return Response::json($subscriber, JsonResponse::HTTP_CREATED);
+        return Response::json(new SubscriberResource($subscriber), JsonResponse::HTTP_CREATED);
     }
 
     /**
