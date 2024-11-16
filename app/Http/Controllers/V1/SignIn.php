@@ -2,69 +2,78 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Exceptions\V1\ApiErrorException;
+use App\Helpers\Generator;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\SignInRequest;
 use App\Mail\AuthenticateWithMagickLink;
 use App\Models\MagicLink;
 use App\Models\Subscriber;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Symfony\Component\Mailer\Exception\TransportException;
 
 class SignIn extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __construct()
     {
-        $validator = Validator::make($request->all(), [
-            'cnpj' => ['required', 'string', 'size:14', 'exists:users,cnpj'],
-        ]);
+        parent::__construct();
 
-        if ($validator->fails()) {
-            return Response::json([
-                'type' => 'INVALID_REQUEST_ERROR',
-                'code' => 400,
-                'message' => 'The request was not accepted due to a missing required field or an error in the field format.',
-                'path' => '/'.$request->path(),
-                'timestamp' => now()->toDateTimeString(),
-                'errors' => $validator->errors(),
-            ], 400);
-        }
+        Log::info(self::class.':: Starting to send a new magic link.');
+    }
 
+    public function __invoke(SignInRequest $request): JsonResponse
+    {
+        $validated = $request->safe();
+
+        $subscriber = Subscriber::firstWhere('cnpj', $validated->cnpj);
+
+        $this->createMagicLinkInDatabase($subscriber);
+
+        $this->sendMagicLinkByEmail($subscriber);
+
+        Log::info(self::class.':: Finishing to send a new magic link.');
+
+        return Response::json(status: JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    private function createMagicLinkInDatabase(Subscriber $subscriber): MagicLink
+    {
         try {
-            $validated = $validator->safe();
-
-            $subscriber = Subscriber::where('cnpj', $validated->cnpj)
-                ->select('id', 'email', 'secret_word')
-                ->firstOrFail();
-
-            $magicLink = new MagicLink([
-                'token' => Str::uuid()->toString(),
-                'expires_at' => now()->addMinutes(5)->toDateTimeString(),
-            ]);
-
+            $magicLink = new MagicLink();
+            $magicLink->token = Str::uuid()->toString();
+            $magicLink->expires_at = Generator::magicLinkExpireTime();
             $subscriber->magicLinks()->save($magicLink);
 
-            Mail::to($subscriber->email)
-                ->send(
-                    new AuthenticateWithMagickLink(
-                        link: $subscriber->latestMagicLink->fullUrl(),
-                        secretWord: $subscriber->secret_word
-                    )
-                );
+            Log::info(
+                self::class.':: New magic link has been created in the database.',
+                ['magic_link' => $magicLink->toArray()]
+            );
 
-            return Response::json(status: 204);
-        } catch (QueryException|TransportException $error) {
-            return Response::json([
-                'type' => 'API_ERROR',
-                'code' => 500,
-                'message' => 'Something went wrong with Brutus\'s servers. Please, contact the system admin at '.config('mail.from.address').'.',
-                'path' => '/'.$request->path(),
-                'timestamp' => now()->toDateTimeString(),
-            ], 500);
+            return $magicLink;
+        } catch (QueryException $error) {
+            throw new ApiErrorException(self::class.':: Failed to create new magic link in the database.', $error);
+        }
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    private function sendMagicLinkByEmail(Subscriber $subscriber): void
+    {
+        try {
+            Mail::to($subscriber->email)->send(new AuthenticateWithMagickLink($subscriber));
+
+            Log::info(self::class.':: New magic link has been sent to the subscriber\'s email address.');
+        } catch (TransportException $error) {
+            throw new ApiErrorException(self::class.':: Failed to send a new magic link to the subscriber\'s email address.', $error);
         }
     }
 }

@@ -5,65 +5,73 @@ use App\Models\Subscriber;
 
 describe('Sign In', function () {
     beforeEach(function () {
-        $this->endpoint = route('v1.sign-in');
+        $this->route = route('v1.sign-in');
     });
 
-    it('should return a bad request if missing a required field', function () {
-        $response = $this->postJson($this->endpoint, []);
+    it('should return a bad request if missing required fields', function () {
+        $response = $this->postJson($this->route, []);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['cnpj']);
+        $response->assertBadRequest();
+        $response->assertSee([
+            'The cnpj field is required.',
+        ]);
     });
 
-    it('should return an error if the CNPJ is invalid', function (string $cnpj) {
+    it('should return a bad request if CNPJ is invalid', function (string $cnpj) {
         $credential = ['cnpj' => $cnpj];
 
-        $response = $this->postJson($this->endpoint, $credential);
+        $response = $this->postJson($this->route, $credential);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['cnpj' => 'The cnpj field has an invalid format.']);
+        $response->assertBadRequest();
+        $response->assertSee('The cnpj field has an invalid format.');
     })->with(['123', '123456780001415', '10.123.456/0001-99']);
 
-    it('should return an error if no user matches the CNPJ', function () {
+    it('should return a bad request if no user matches CNPJ', function () {
         $credential = ['cnpj' => '00000000000099'];
 
-        $response = $this->postJson($this->endpoint, $credential);
+        $response = $this->postJson($this->route, $credential);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['cnpj' => 'The cnpj provided does not matches to any user.']);
+        $response->assertBadRequest();
+        $response->assertSee('The cnpj provided does not matches to any user.');
     });
 
-    it(
-        'should return an error if the endpoint reached the maximum number of requests per hour',
-        function () {
-            $i = 0;
+    it('should limit the maximum number of requests per hour', function () {
+        $maxLimit = 5;
 
-            while ($i <= 50) {
-                $this->postJson($this->endpoint, []);
-                ++$i;
-            }
-
-            $response = $this->postJson($this->endpoint, []);
-
-            $response->assertTooManyRequests();
+        while ($maxLimit > 0) {
+            $this->postJson($this->route, []);
+            --$maxLimit;
         }
+
+        $response = $this->postJson($this->route, []);
+
+        $response->assertTooManyRequests();
+    }
     );
 
-    it('should send an email with the magic link to the user', function () {
-        $subscriberFactory = Subscriber::factory()->create();
-        $credential = ['cnpj' => $subscriberFactory->cnpj];
+    it('should send an email with magic link to subscriber if fields are valid', function () {
+        $validSubscriber = Subscriber::factory()->create();
+        $credential = ['cnpj' => $validSubscriber->cnpj];
 
-        $response = $this->postJson($this->endpoint, $credential);
+        $response = $this->postJson($this->route, $credential);
 
-        $subscriber = Subscriber::find($subscriberFactory->id);
-        $magicLink = $subscriber->latestMagicLink->fullUrl();
-        $mail = new AuthenticateWithMagickLink(
-            link: $magicLink,
-            secretWord: $subscriber->secret_word
-        );
+        $subscriber = Subscriber::find($validSubscriber->id);
+        $mail = new AuthenticateWithMagickLink($subscriber);
 
-        $response->assertStatus(204);
+        $response->assertNoContent();
+        $mail->assertSeeInHtml($subscriber->latestMagicLink->fullUrl());
+    });
+
+    it('should include the subscriber\'s secret word in the email', function () {
+        $validSubscriber = Subscriber::factory()->create();
+        $credential = ['cnpj' => $validSubscriber->cnpj];
+
+        $response = $this->postJson($this->route, $credential);
+
+        $subscriber = Subscriber::find($validSubscriber->id);
+        $mail = new AuthenticateWithMagickLink($subscriber);
+
+        $response->assertNoContent();
         $mail->assertSeeInHtml($subscriber->secret_word);
-        $mail->assertSeeInHtml($magicLink);
     });
 });

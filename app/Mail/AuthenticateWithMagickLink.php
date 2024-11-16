@@ -2,19 +2,24 @@
 
 namespace App\Mail;
 
+use App\Models\Subscriber;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class AuthenticateWithMagickLink extends Mailable
+class AuthenticateWithMagickLink extends Mailable implements ShouldQueue
 {
     use Queueable;
     use SerializesModels;
 
-    public function __construct(private string $link, private string $secretWord)
+    public $tries = 3;
+
+    public function __construct(private Subscriber $subscriber)
     {
+        $this->afterCommit();
     }
 
     public function envelope(): Envelope
@@ -29,8 +34,8 @@ class AuthenticateWithMagickLink extends Mailable
         return new Content(
             markdown: 'emails.authenticate-with-magic-link',
             with: [
-                'link' => $this->link,
-                'secretWord' => $this->secretWord,
+                'link' => $this->subscriber->latestMagicLink->fullUrl(),
+                'secretWord' => $this->subscriber->secret_word,
             ]
         );
     }
