@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\V1\PermissionException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,14 +23,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (AuthenticationException $error, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'type' => 'PERMISSION_ERROR',
-                    'code' => 'authentication_required',
-                    'message' => 'You need to be authenticated to access this endpoint. Please login to continue.',
-                    'path' => '/'.$request->path(),
-                    'timestamp' => now()->toDateTimeString(),
-                ], 401);
-            }
+            throw_if($request->is('api/*'), PermissionException::class);
         });
     })->create();

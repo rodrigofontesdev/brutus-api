@@ -5,22 +5,21 @@ use App\Models\Subscriber;
 
 describe('Sign Out', function () {
     beforeEach(function () {
-        $this->endpoint = route('v1.sign-out');
+        $this->route = route('v1.sign-out');
     });
 
-    it('should return a permission error if the user is not authenticated', function () {
-        $response = $this->postJson($this->endpoint);
+    it('should return an unauthorized response for unauthenticated users', function () {
+        $response = $this->postJson($this->route);
 
-        $response->assertStatus(401);
-        $response->assertJson(['code' => 'authentication_required']);
+        $response->assertUnauthorized();
     });
 
-    it('should log out the user of the application', function () {
+    it('should log the user out of the application', function () {
         $subscriber = Subscriber::factory()->has(MagicLink::factory()->used())->create();
 
-        $response = $this->actingAs($subscriber)->postJson($this->endpoint);
+        $response = $this->actingAs($subscriber)->postJson($this->route);
 
-        $response->assertStatus(204);
+        $response->assertNoContent();
         $this->assertGuest('web');
     });
 });

@@ -17,6 +17,6 @@ class SignOut extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Response::json(status: 204);
+        return Response::json(status: JsonResponse::HTTP_NO_CONTENT);
     }
 }
