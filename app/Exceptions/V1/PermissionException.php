@@ -13,9 +13,9 @@ class PermissionException extends \Exception implements ShouldntReport
     {
         return Response::json([
             'type' => 'PERMISSION_ERROR',
-            'message' => 'You need to be authenticated to access the route. Please login to continue.',
+            'message' => 'Your current permissions do not allow access to this resource.',
             'path' => $request->fullUrl(),
             'started_at' => now()->toDateTimeString(),
-        ], JsonResponse::HTTP_UNAUTHORIZED);
+        ], JsonResponse::HTTP_FORBIDDEN);
     }
 }

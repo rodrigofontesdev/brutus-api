@@ -1,7 +1,8 @@
 <?php
 
-use App\Exceptions\V1\PermissionException;
-use Illuminate\Auth\AuthenticationException;
+use App\Exceptions\V1\AuthenticationException;
+use Illuminate\Auth\AuthenticationException as AuthenticationExceptionIlluminate;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -22,7 +23,15 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (AuthenticationException $error, Request $request) {
-            throw_if($request->is('api/*'), PermissionException::class);
+        $exceptions->render(function (AuthenticationExceptionIlluminate $error, Request $request) {
+            throw_if(
+                $request->is('api/*'),
+                AuthenticationException::class,
+                self::class.':: Unauthorized user attempted to access a protected route.'
+            );
+        })->throttle(function (Throwable $error) {
+            if ($error instanceof AuthenticationException) {
+                return Limit::perMinute(100);
+            }
         });
     })->create();
