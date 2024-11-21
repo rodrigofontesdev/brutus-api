@@ -7,85 +7,83 @@ use Illuminate\Support\Str;
 
 describe('Authenticate', function () {
     beforeEach(function () {
-        $this->endpoint = route('v1.authenticate');
+        $this->route = route('v1.authenticate');
         $this->redirectTo = 'https://example.com';
     });
 
-    it('should return a bad request when token is missing', function () {
-        $response = $this->postJson($this->endpoint, []);
+    it('should return a bad request for missing tokens', function () {
+        $response = $this->postJson($this->route, []);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['token' => 'The token field is required.']);
+        $response->assertBadRequest();
+        $response->assertSee('The token field is required.');
     });
 
-    it('should return a bad request when redirect is not a valid URL', function () {
-        $redirectTo = ['redirect' => 'http://unsecure.com'];
+    it('should return a bad request for invalid redirect URL', function () {
+        $redirectTo = ['redirect' => 'http://example.com'];
 
-        $response = $this->postJson($this->endpoint, $redirectTo);
+        $response = $this->postJson($this->route, $redirectTo);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['redirect' => 'The redirect field must be a valid URL.']);
+        $response->assertBadRequest();
+        $response->assertSee('The redirect field must be a valid URL.');
     });
 
-    it('should return a bad request when token is not a valid UUID', function () {
+    it('should return a bad request if the token is an invalid UUID', function () {
         $token = ['token' => 'wrong'];
 
-        $response = $this->postJson($this->endpoint, $token);
+        $response = $this->postJson($this->route, $token);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['token' => 'The token field must be a valid UUID.']);
+        $response->assertBadRequest();
+        $response->assertSee('The token field must be a valid UUID.');
     });
 
-    it('should return a bad request when token does not match any record', function () {
+    it('should return a bad request for non-existent tokens', function () {
         $token = ['token' => Str::uuid()->toString()];
 
-        $response = $this->postJson($this->endpoint, $token);
+        $response = $this->postJson($this->route, $token);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['token' => 'The selected token is invalid.']);
+        $response->assertBadRequest();
+        $response->assertSee('The selected token is invalid.');
     });
 
-    it('should return a bad request when the token already been used', function () {
+    it('should return an unauthorized response for reused tokens', function () {
         $subscriber = Subscriber::factory()->has(MagicLink::factory()->used())->create();
         $token = ['token' => $subscriber->latestMagicLink->token];
 
-        $response = $this->postJson($this->endpoint, $token);
+        $response = $this->postJson($this->route, $token);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['token' => 'The selected token has already been used.']);
+        $response->assertUnauthorized();
     });
 
-    it('should return a bad request if token is expired', function () {
+    it('should return an unauthorized response for expired tokens', function () {
         $subscriber = Subscriber::factory()->has(MagicLink::factory()->expired())->create();
         $token = ['token' => $subscriber->latestMagicLink->token];
 
-        $response = $this->postJson($this->endpoint, $token);
+        $response = $this->postJson($this->route, $token);
 
-        $response->assertStatus(400);
-        $response->assertInvalid(['token' => 'The selected token is expired.']);
+        $response->assertUnauthorized();
     });
 
-    it('should authenticate the user if the token is valid', function () {
+    it('should authenticate the user if the provided token is valid', function () {
         $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
         $payload = [
             'token' => $subscriber->latestMagicLink->token,
             'redirect' => $this->redirectTo,
         ];
 
-        $response = $this->postJson($this->endpoint, $payload);
+        $response = $this->postJson($this->route, $payload);
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $this->assertAuthenticated('web');
     });
 
-    it('should mark magic link as used if the user authenticates successfully', function () {
+    it('should mark the magic link as used after successful user authentication', function () {
         $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
         $payload = [
             'token' => $subscriber->latestMagicLink->token,
             'redirect' => $this->redirectTo,
         ];
 
-        $this->postJson($this->endpoint, $payload);
+        $this->postJson($this->route, $payload);
 
         $this->assertAuthenticated('web');
         $this->assertDatabaseHas('magic_links', [
@@ -94,16 +92,18 @@ describe('Authenticate', function () {
         ]);
     });
 
-    it('should expire user\'s session after 24 hours', function () {
+    it('should expire user session after 24 hours', function () {
         $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
         $payload = [
             'token' => $subscriber->latestMagicLink->token,
             'redirect' => $this->redirectTo,
         ];
 
-        $response = $this->postJson($this->endpoint, $payload);
+        $response = $this->postJson($this->route, $payload);
 
-        Carbon::setTestNow(now()->addHours(24));
+        $forwardOneDayAhead = now()->addDay();
+
+        Carbon::setTestNow($forwardOneDayAhead);
         $response->assertCookieExpired(config('session.cookie'));
         Carbon::setTestNow();
     });

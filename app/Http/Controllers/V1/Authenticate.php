@@ -2,66 +2,80 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Exceptions\V1\ApiErrorException;
+use App\Exceptions\V1\InvalidCredentialException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\AuthenticateRequest;
 use App\Models\MagicLink;
-use App\Rules\IsTokenExpired;
-use App\Rules\IsTokenUsed;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Validator;
 
 class Authenticate extends Controller
 {
-    public function __invoke(Request $request): JsonResponse
+    public function __construct()
     {
-        $validator = Validator::make($request->all(), [
-            'token' => [
-                'required',
-                'uuid',
-                'exists:magic_links,token',
-                new IsTokenUsed(),
-                new IsTokenExpired(),
-            ],
-            'redirect' => 'url:https',
-        ]);
+        Log::info(self::class.':: Starting to authenticate subscriber.');
+    }
 
-        if ($validator->fails()) {
-            return Response::json([
-                'type' => 'INVALID_REQUEST_ERROR',
-                'code' => 400,
-                'message' => 'The request was not accepted due to a missing required field or an error in the field format.',
-                'path' => '/'.$request->path(),
-                'timestamp' => now()->toDateTimeString(),
-                'errors' => $validator->errors(),
-            ], 400);
-        }
+    public function __invoke(AuthenticateRequest $request): JsonResponse
+    {
+        $validated = $request->safe();
 
+        $magicLink = $this->markMagicLinkAsUsed($validated->token);
+
+        Auth::loginUsingId($magicLink->user);
+
+        $request->session()->regenerate();
+
+        Log::info(
+            self::class.':: Finishing to authenticate subscriber.',
+            ['subscriber' => $magicLink->owner->toArray()]
+        );
+
+        return Response::json([
+            'message' => 'Subscriber successfully authenticated.',
+            'redirect' => $validated->redirect,
+        ], JsonResponse::HTTP_OK);
+    }
+
+    /**
+     * @throws ApiErrorException
+     */
+    private function markMagicLinkAsUsed(string $token): MagicLink
+    {
         try {
-            $validated = $validator->safe();
+            $magicLink = MagicLink::firstWhere('token', $token);
 
-            $magicLink = MagicLink::where('token', $validated->token)->firstOrFail();
+            $this->canMagicLinkBeUsed($magicLink);
+
             $magicLink->used_at = now()->toDateTimeString();
             $magicLink->save();
 
-            Auth::loginUsingId($magicLink->user);
+            Log::info(
+                self::class.':: Magic link has been marked as used in the database.',
+                ['magic_link' => $magicLink->toArray()]
+            );
 
-            $request->session()->regenerate();
-
-            return Response::json([
-                'message' => 'User successfully authenticated.',
-                'redirect' => $validated->redirect,
-            ]);
+            return $magicLink;
         } catch (QueryException $error) {
-            return Response::json([
-                'type' => 'API_ERROR',
-                'code' => 500,
-                'message' => 'Something went wrong with Brutus\'s servers. Please, contact the system admin at '.config('mail.from.address').'.',
-                'path' => '/'.$request->path(),
-                'timestamp' => now()->toDateTimeString(),
-            ], 500);
+            throw new ApiErrorException(self::class.':: Failed to mark the magic link as used in the database.', $error);
         }
+    }
+
+    /**
+     * @throws InvalidCredentialException
+     */
+    private function canMagicLinkBeUsed(MagicLink $magicLink): void
+    {
+        $isMagicLinkInvalid = $magicLink->isUsed() || $magicLink->isExpired();
+
+        throw_if(
+            $isMagicLinkInvalid,
+            InvalidCredentialException::class,
+            self::class.':: Subscriber could not be authenticated due to an expired or used magic link.',
+        );
     }
 }

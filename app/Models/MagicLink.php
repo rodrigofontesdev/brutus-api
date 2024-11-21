@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 class MagicLink extends Model
 {
@@ -32,6 +33,11 @@ class MagicLink extends Model
         return $this->belongsTo(Subscriber::class, 'user', 'id');
     }
 
+    public function prunable(): Builder
+    {
+        return static::where('expires_at', '<', now()->toDateString());
+    }
+
     public function fullUrl(): string
     {
         $hostUrl = config('app.client.url');
@@ -41,8 +47,23 @@ class MagicLink extends Model
         return "{$hostUrl}/authenticate/{$token}&redirect={$redirectUrl}";
     }
 
-    public function prunable(): Builder
+    public function isUsed(): bool
     {
-        return static::where('expires_at', '<', now()->toDateString());
+        return !empty($this->used_at);
+    }
+
+    public function isNotUsed(): bool
+    {
+        return empty($this->used_at);
+    }
+
+    public function isExpired(): bool
+    {
+        return Carbon::now()->greaterThanOrEqualTo($this->expires_at);
+    }
+
+    public function isNotExpired(): bool
+    {
+        return Carbon::now()->lessThan($this->expires_at);
     }
 }

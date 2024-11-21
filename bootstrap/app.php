@@ -1,12 +1,14 @@
 <?php
 
 use App\Exceptions\V1\AuthenticationException;
-use Illuminate\Auth\AuthenticationException as AuthenticationExceptionIlluminate;
+use App\Http\Middleware\EnsureLogHasContext;
+use Illuminate\Auth\AuthenticationException as BuiltInAuthenticationException;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\StartSession;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -18,18 +20,18 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
+        $middleware->append([
+            EnsureLogHasContext::class,
+        ]);
         $middleware->api(append: [
-            Illuminate\Session\Middleware\StartSession::class,
+            StartSession::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (AuthenticationExceptionIlluminate $error, Request $request) {
-            throw_if(
-                $request->is('api/*'),
-                AuthenticationException::class,
-                self::class.':: Unauthorized user attempted to access a protected route.'
-            );
-        })->throttle(function (Throwable $error) {
+        $exceptions->render(function (BuiltInAuthenticationException $error, Request $request) {
+            throw_if($request->is('api/*'), AuthenticationException::class);
+        })
+        ->throttle(function (Throwable $error) {
             if ($error instanceof AuthenticationException) {
                 return Limit::perMinute(100);
             }

@@ -7,24 +7,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
-class AuthenticationException extends \Exception
+class InvalidCredentialException extends AuthenticationException
 {
-    public function __construct(
-        string $message = 'Unauthenticated user attempted to access a protected route.',
-    ) {
-        parent::__construct($message);
-    }
-
     public function report(): void
     {
-        Log::warning($this->message);
+        Log::error($this->message);
     }
 
     public function render(Request $request): JsonResponse
     {
         return Response::json([
             'type' => 'AUTHENTICATION_ERROR',
-            'message' => 'You need to be authenticated to access this route. Please login to continue.',
+            'message' => 'The magic link is expired or already been used.',
             'path' => $request->fullUrl(),
             'started_at' => now()->toDateTimeString(),
         ], JsonResponse::HTTP_UNAUTHORIZED);
