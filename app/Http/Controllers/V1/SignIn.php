@@ -21,8 +21,6 @@ class SignIn extends Controller
 {
     public function __construct()
     {
-        parent::__construct();
-
         Log::info(self::class.':: Starting to send a new magic link.');
     }
 
