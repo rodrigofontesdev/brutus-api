@@ -33,12 +33,9 @@ class ApiErrorException extends \Exception
 
         return Response::json([
             'type' => 'API_ERROR',
-            'message' => "Something went wrong on {$appName}'s servers.",
+            'message' => "Something went wrong on {$appName}'s servers, we are experiencing technical difficulties. Please try again later.",
             'path' => $request->fullUrl(),
             'started_at' => now()->toDateTimeString(),
-            'errors' => [
-                'Our servers are experiencing technical difficulties. Please try again later.',
-            ],
         ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
     }
 }
