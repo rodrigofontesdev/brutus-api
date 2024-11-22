@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
-class SubscriberFactory extends Factory
+class UserFactory extends Factory
 {
     public function definition(): array
     {
@@ -26,7 +26,7 @@ class SubscriberFactory extends Factory
 
     public function withIncompleteProfile(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn () => [
             'city' => null,
             'state' => null,
             'mei' => null,

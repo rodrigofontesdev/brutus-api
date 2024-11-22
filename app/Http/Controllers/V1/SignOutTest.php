@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\MagicLink;
-use App\Models\Subscriber;
+use App\Models\User;
 
 describe('Sign Out', function () {
     beforeEach(function () {
@@ -15,7 +15,7 @@ describe('Sign Out', function () {
     });
 
     it('should log the user out of the application', function () {
-        $subscriber = Subscriber::factory()->has(MagicLink::factory()->used())->create();
+        $subscriber = User::factory()->has(MagicLink::factory()->used())->create();
 
         $response = $this->actingAs($subscriber)->postJson($this->route);
 

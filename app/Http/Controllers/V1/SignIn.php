@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\SignInRequest;
 use App\Mail\AuthenticateWithMagickLink;
 use App\Models\MagicLink;
-use App\Models\Subscriber;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +28,7 @@ class SignIn extends Controller
     {
         $validated = $request->safe();
 
-        $subscriber = Subscriber::firstWhere('cnpj', $validated->cnpj);
+        $subscriber = User::firstWhere('cnpj', $validated->cnpj);
 
         $this->createMagicLinkInDatabase($subscriber);
 
@@ -42,7 +42,7 @@ class SignIn extends Controller
     /**
      * @throws ApiErrorException
      */
-    private function createMagicLinkInDatabase(Subscriber $subscriber): MagicLink
+    private function createMagicLinkInDatabase(User $subscriber): MagicLink
     {
         try {
             $magicLink = new MagicLink();
@@ -64,7 +64,7 @@ class SignIn extends Controller
     /**
      * @throws ApiErrorException
      */
-    private function sendMagicLinkByEmail(Subscriber $subscriber): void
+    private function sendMagicLinkByEmail(User $subscriber): void
     {
         try {
             Mail::to($subscriber->email)->send(new AuthenticateWithMagickLink($subscriber));

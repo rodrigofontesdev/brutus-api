@@ -6,10 +6,10 @@ use App\Exceptions\V1\ApiErrorException;
 use App\Helpers\Generator;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\SignUpRequest;
-use App\Http\Resources\V1\SubscriberResource;
+use App\Http\Resources\V1\UserResource;
 use App\Mail\NewlyRegisteredSubscriber;
 use App\Models\MagicLink;
-use App\Models\Subscriber;
+use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
@@ -38,16 +38,17 @@ class SignUp extends Controller
 
         Log::info(self::class.':: Finishing to create a new subscriber.');
 
-        return Response::json(new SubscriberResource($subscriber), JsonResponse::HTTP_CREATED);
+        return Response::json(new UserResource($subscriber), JsonResponse::HTTP_CREATED);
     }
 
     /**
      * @throws ApiErrorException
      */
-    private function createSubscriberInDatabase(ValidatedInput $data): Subscriber
+    private function createSubscriberInDatabase(ValidatedInput $data): User
     {
         try {
-            $subscriber = new Subscriber();
+            $subscriber = new User();
+            $subscriber->role = 'subscriber';
             $subscriber->email = $data->email;
             $subscriber->full_name = $data->full_name;
             $subscriber->cnpj = $data->cnpj;
@@ -68,7 +69,7 @@ class SignUp extends Controller
     /**
      * @throws ApiErrorException
      */
-    private function createMagicLinkInDatabase(Subscriber $subscriber): MagicLink
+    private function createMagicLinkInDatabase(User $subscriber): MagicLink
     {
         try {
             $magicLink = new MagicLink();
@@ -89,7 +90,7 @@ class SignUp extends Controller
     }
 
     private function sendEmailToSubscriber(
-        Subscriber $subscriber,
+        User $subscriber,
         MagicLink $magicLink,
     ): void {
         try {

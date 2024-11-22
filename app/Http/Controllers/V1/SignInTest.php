@@ -1,7 +1,7 @@
 <?php
 
 use App\Mail\AuthenticateWithMagickLink;
-use App\Models\Subscriber;
+use App\Models\User;
 
 describe('Sign In', function () {
     beforeEach(function () {
@@ -50,12 +50,12 @@ describe('Sign In', function () {
     );
 
     it('should send an email with magic link to subscriber if fields are valid', function () {
-        $validSubscriber = Subscriber::factory()->create();
-        $credential = ['cnpj' => $validSubscriber->cnpj];
+        $subscriberCreated = User::factory()->create();
+        $credential = ['cnpj' => $subscriberCreated->cnpj];
 
         $response = $this->postJson($this->route, $credential);
 
-        $subscriber = Subscriber::find($validSubscriber->id);
+        $subscriber = User::find($subscriberCreated->id);
         $mail = new AuthenticateWithMagickLink($subscriber);
 
         $response->assertNoContent();
@@ -63,12 +63,12 @@ describe('Sign In', function () {
     });
 
     it('should include the subscriber\'s secret word in the email', function () {
-        $validSubscriber = Subscriber::factory()->create();
-        $credential = ['cnpj' => $validSubscriber->cnpj];
+        $subscriberCreated = User::factory()->create();
+        $credential = ['cnpj' => $subscriberCreated->cnpj];
 
         $response = $this->postJson($this->route, $credential);
 
-        $subscriber = Subscriber::find($validSubscriber->id);
+        $subscriber = User::find($subscriberCreated->id);
         $mail = new AuthenticateWithMagickLink($subscriber);
 
         $response->assertNoContent();

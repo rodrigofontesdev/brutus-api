@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\MagicLink;
-use App\Models\Subscriber;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -46,7 +46,7 @@ describe('Authenticate', function () {
     });
 
     it('should return an unauthorized response for reused tokens', function () {
-        $subscriber = Subscriber::factory()->has(MagicLink::factory()->used())->create();
+        $subscriber = User::factory()->has(MagicLink::factory()->used())->create();
         $token = ['token' => $subscriber->latestMagicLink->token];
 
         $response = $this->postJson($this->route, $token);
@@ -55,7 +55,7 @@ describe('Authenticate', function () {
     });
 
     it('should return an unauthorized response for expired tokens', function () {
-        $subscriber = Subscriber::factory()->has(MagicLink::factory()->expired())->create();
+        $subscriber = User::factory()->has(MagicLink::factory()->expired())->create();
         $token = ['token' => $subscriber->latestMagicLink->token];
 
         $response = $this->postJson($this->route, $token);
@@ -64,7 +64,7 @@ describe('Authenticate', function () {
     });
 
     it('should authenticate the user if the provided token is valid', function () {
-        $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
+        $subscriber = User::factory()->has(MagicLink::factory())->create();
         $payload = [
             'token' => $subscriber->latestMagicLink->token,
             'redirect' => $this->redirectTo,
@@ -77,7 +77,7 @@ describe('Authenticate', function () {
     });
 
     it('should mark the magic link as used after successful user authentication', function () {
-        $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
+        $subscriber = User::factory()->has(MagicLink::factory())->create();
         $payload = [
             'token' => $subscriber->latestMagicLink->token,
             'redirect' => $this->redirectTo,
@@ -93,7 +93,7 @@ describe('Authenticate', function () {
     });
 
     it('should expire user session after 24 hours', function () {
-        $subscriber = Subscriber::factory()->has(MagicLink::factory())->create();
+        $subscriber = User::factory()->has(MagicLink::factory())->create();
         $payload = [
             'token' => $subscriber->latestMagicLink->token,
             'redirect' => $this->redirectTo,

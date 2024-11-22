@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Subscriber;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -17,7 +17,7 @@ class AuthenticateWithMagickLink extends Mailable implements ShouldQueue
 
     public $tries = 3;
 
-    public function __construct(private Subscriber $subscriber)
+    public function __construct(private User $subscriber)
     {
         $this->afterCommit();
     }

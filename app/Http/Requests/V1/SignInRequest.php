@@ -4,8 +4,10 @@ namespace App\Http\Requests\V1;
 
 use App\Exceptions\V1\InvalidRequestException;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class SignInRequest extends FormRequest
 {
@@ -20,7 +22,14 @@ class SignInRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cnpj' => ['required', 'string', 'size:14', 'exists:users,cnpj'],
+            'cnpj' => [
+                'required',
+                'string',
+                'size:14',
+                Rule::exists('users')->where(function (Builder $query) {
+                    $query->where('role', 'subscriber');
+                }),
+            ],
         ];
     }
 

@@ -26,11 +26,11 @@ class MagicLink extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Subscriber, $this>
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, $this>
      */
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(Subscriber::class, 'user', 'id');
+        return $this->belongsTo(User::class, 'user', 'id');
     }
 
     public function prunable(): Builder

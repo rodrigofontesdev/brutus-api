@@ -1,7 +1,7 @@
 <?php
 
 use App\Mail\NewlyRegisteredSubscriber;
-use App\Models\Subscriber;
+use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 
 describe('Sign Up', function () {
@@ -38,7 +38,7 @@ describe('Sign Up', function () {
 
     it('should return a bad request if CNPJ is already been used by another subscriber',
         function () {
-            Subscriber::factory()->create(['cnpj' => $this->subscriber['cnpj']]);
+            User::factory()->create(['cnpj' => $this->subscriber['cnpj']]);
             $subscriber = $this->subscriber;
 
             $response = $this->postJson($this->route, $subscriber);
@@ -77,7 +77,7 @@ describe('Sign Up', function () {
 
     it('should return a bad request if email is already been used by another subscriber',
         function () {
-            Subscriber::factory()->create(['email' => $this->subscriber['email']]);
+            User::factory()->create(['email' => $this->subscriber['email']]);
             $subscriber = $this->subscriber;
 
             $response = $this->postJson($this->route, $subscriber);
@@ -105,7 +105,7 @@ describe('Sign Up', function () {
 
             $response = $this->postJson($this->route, $subscriber);
 
-            $subscriberCreated = Subscriber::find($response['id']);
+            $subscriberCreated = User::find($response['id']);
             $magicLink = $subscriberCreated->latestMagicLink;
 
             $this->assertDatabaseHas('users', ['id' => $response['id'], 'role' => 'subscriber']);
@@ -118,7 +118,7 @@ describe('Sign Up', function () {
 
         $response = $this->postJson($this->route, $subscriber);
 
-        $subscriberCreated = Subscriber::find($response['id']);
+        $subscriberCreated = User::find($response['id']);
         $magicLink = $subscriberCreated->latestMagicLink;
         $mail = new NewlyRegisteredSubscriber($magicLink);
 
