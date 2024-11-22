@@ -10,16 +10,21 @@ use Illuminate\Support\Facades\Response;
 
 class InvalidRequestException extends \Exception
 {
-    public function __construct(private string $subject, private Validator $validator)
-    {
+    /**
+     * @param Validator|array<int, string> $validator
+     */
+    public function __construct(
+        string $message = '',
+        int $code = 0,
+        ?\Throwable $previous = null,
+        private array|Validator $validator = [],
+    ) {
+        parent::__construct($message, $code, $previous);
     }
 
     public function report(): void
     {
-        Log::error(
-            $this->subject,
-            ['errors' => $this->validator->errors()->all()]
-        );
+        Log::error($this->message, ['errors' => $this->getErros()]);
     }
 
     public function render(Request $request): JsonResponse
@@ -29,7 +34,14 @@ class InvalidRequestException extends \Exception
             'message' => 'The request was made with missing or invalid parameters.',
             'path' => $request->fullUrl(),
             'started_at' => now()->toDateTimeString(),
-            'errors' => $this->validator->errors()->all(),
+            'errors' => $this->getErros(),
         ], JsonResponse::HTTP_BAD_REQUEST);
+    }
+
+    private function getErros(): array
+    {
+        return $this->validator instanceof Validator ?
+            $this->validator->errors()->all() :
+            $this->validator;
     }
 }

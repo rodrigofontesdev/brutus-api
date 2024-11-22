@@ -9,19 +9,14 @@ use Illuminate\Support\Facades\Response;
 
 class ApiErrorException extends \Exception
 {
-    public function __construct(private string $subject, private \Exception $origin)
-    {
-    }
-
     public function report(): void
     {
         Log::alert(
-            $this->subject,
+            $this->message,
             [
                 'exception' => [
-                    'origin' => get_class($this->origin),
-                    'message' => $this->origin->getMessage(),
-                    'stacktrace' => $this->origin->getTraceAsString(),
+                    'message' => $this->getPrevious()->getMessage(),
+                    'stacktrace' => $this->getPrevious()->getTraceAsString(),
                 ],
             ]
         );

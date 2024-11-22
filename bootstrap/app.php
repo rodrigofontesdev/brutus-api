@@ -29,7 +29,11 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (BuiltInAuthenticationException $error, Request $request) {
-            throw_if($request->is('api/*'), AuthenticationException::class);
+            throw_if(
+                $request->is('api/*'),
+                AuthenticationException::class,
+                'Unauthenticated user attempted to access a protected route.'
+            );
         })
         ->throttle(function (Throwable $error) {
             if ($error instanceof AuthenticationException) {

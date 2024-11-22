@@ -57,7 +57,7 @@ class SignIn extends Controller
 
             return $magicLink;
         } catch (QueryException $error) {
-            throw new ApiErrorException(self::class.':: Failed to create new magic link in the database.', $error);
+            throw new ApiErrorException(message: self::class.':: Failed to create new magic link in the database.', previous: $error);
         }
     }
 
@@ -71,7 +71,7 @@ class SignIn extends Controller
 
             Log::info(self::class.':: New magic link has been sent to the subscriber\'s email address.');
         } catch (TransportException $error) {
-            throw new ApiErrorException(self::class.':: Failed to send a new magic link to the subscriber\'s email address.', $error);
+            throw new ApiErrorException(message: self::class.':: Failed to send a new magic link to the subscriber\'s email address.', previous: $error);
         }
     }
 }

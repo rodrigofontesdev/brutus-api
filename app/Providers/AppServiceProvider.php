@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perHour(5)
                 ->by($request->ip())
                 ->response(function (Request $request, array $headers) {
-                    throw new RateLimitException($headers);
+                    throw new RateLimitException(headers: $headers);
                 });
         });
 

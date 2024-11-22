@@ -62,7 +62,7 @@ class SignUp extends Controller
 
             return $subscriber;
         } catch (QueryException $error) {
-            throw new ApiErrorException(self::class.':: Failed to create new subscriber in the database.', $error);
+            throw new ApiErrorException(message: self::class.':: Failed to create new subscriber in the database.', previous: $error);
         }
     }
 
@@ -85,7 +85,7 @@ class SignUp extends Controller
 
             return $magicLink;
         } catch (QueryException $error) {
-            throw new ApiErrorException(self::class.':: Failed to create subscriber\'s magic link in the database.', $error);
+            throw new ApiErrorException(message: self::class.':: Failed to create subscriber\'s magic link in the database.', previous: $error);
         }
     }
 

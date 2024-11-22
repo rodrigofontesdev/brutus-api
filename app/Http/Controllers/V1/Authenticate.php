@@ -61,7 +61,7 @@ class Authenticate extends Controller
 
             return $magicLink;
         } catch (QueryException $error) {
-            throw new ApiErrorException(self::class.':: Failed to mark the magic link as used in the database.', $error);
+            throw new ApiErrorException(message: self::class.':: Failed to mark the magic link as used in the database.', previous: $error);
         }
     }
 

@@ -9,8 +9,16 @@ use Illuminate\Support\Facades\Response;
 
 class RateLimitException extends \Exception implements ShouldntReport
 {
-    public function __construct(private array $headers)
-    {
+    /**
+     * @param array<string, mixed> $headers
+     */
+    public function __construct(
+        string $message = '',
+        int $code = 0,
+        ?\Throwable $previous = null,
+        private array $headers = [],
+    ) {
+        parent::__construct($message, $code, $previous);
     }
 
     public function render(Request $request): JsonResponse

@@ -9,12 +9,6 @@ use Illuminate\Support\Facades\Response;
 
 class AuthenticationException extends \Exception
 {
-    public function __construct(
-        string $message = 'Unauthenticated user attempted to access a protected route.',
-    ) {
-        parent::__construct($message);
-    }
-
     public function report(): void
     {
         Log::warning($this->message);

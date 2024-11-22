@@ -38,7 +38,7 @@ class SignInRequest extends FormRequest
      */
     protected function failedValidation(Validator $validator): void
     {
-        throw new InvalidRequestException(self::class.':: Unable to validate the sign in request due to missing or invalid parameters.', $validator);
+        throw new InvalidRequestException(message: self::class.':: Unable to validate the sign in request due to missing or invalid parameters.', validator: $validator);
     }
 
     protected function passedValidation(): void

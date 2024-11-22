@@ -46,8 +46,7 @@ describe('Sign In', function () {
         $response = $this->postJson($this->route, []);
 
         $response->assertTooManyRequests();
-    }
-    );
+    });
 
     it('should send an email with magic link to subscriber if fields are valid', function () {
         $subscriberCreated = User::factory()->create();

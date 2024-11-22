@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
-class InvalidCredentialException extends AuthenticationException
+class InvalidCredentialException extends \Exception
 {
     public function report(): void
     {
