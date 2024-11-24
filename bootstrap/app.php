@@ -20,11 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
-        $middleware->append([
-            EnsureLogHasContext::class,
-        ]);
         $middleware->api(append: [
             StartSession::class,
+            EnsureLogHasContext::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

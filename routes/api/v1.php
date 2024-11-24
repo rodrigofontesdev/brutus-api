@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Authenticate;
+use App\Http\Controllers\V1\GetSubscriber;
 use App\Http\Controllers\V1\SignIn;
 use App\Http\Controllers\V1\SignOut;
 use App\Http\Controllers\V1\SignUp;
@@ -22,4 +23,8 @@ Route::name('v1.')
         Route::post('/sign-out', SignOut::class)
             ->middleware('auth:sanctum')
             ->name('sign-out');
+
+        Route::get('/subscriber/{id}', GetSubscriber::class)
+            ->middleware('auth:sanctum')
+            ->name('subscriber');
     });
