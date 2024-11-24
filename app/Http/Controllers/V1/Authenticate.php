@@ -32,7 +32,7 @@ class Authenticate extends Controller
 
         Log::info(
             self::class.':: Finishing to authenticate subscriber.',
-            ['subscriber' => $magicLink->owner->toArray()]
+            ['subscriber' => $request->user()->toArray()]
         );
 
         return Response::json([
