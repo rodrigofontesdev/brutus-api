@@ -8,7 +8,7 @@ describe('Sign Out', function () {
         $this->route = route('v1.sign-out');
     });
 
-    it('should return an unauthorized response for unauthenticated users', function () {
+    it('should return an unauthorized response for unauthenticated requests', function () {
         $response = $this->postJson($this->route);
 
         $response->assertUnauthorized();
