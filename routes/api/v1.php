@@ -24,7 +24,7 @@ Route::name('v1.')
             ->middleware('auth:sanctum')
             ->name('sign-out');
 
-        Route::get('/subscriber/{id}', GetSubscriber::class)
+        Route::get('/subscribers/{id}', GetSubscriber::class)
             ->middleware('auth:sanctum')
-            ->name('subscriber');
+            ->name('subscriber.show');
     });

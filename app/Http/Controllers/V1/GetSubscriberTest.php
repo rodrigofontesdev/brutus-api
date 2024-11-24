@@ -11,7 +11,7 @@ describe('Get Subscriber', function () {
     it('should return an unauthorized response for unauthenticated requests', function () {
         $subscriberId = ['id' => Str::uuid()->toString()];
 
-        $response = $this->getJson(route('v1.subscriber', $subscriberId));
+        $response = $this->getJson(route('v1.subscriber.show', $subscriberId));
 
         $response->assertUnauthorized();
     });
@@ -20,7 +20,7 @@ describe('Get Subscriber', function () {
         $subscriberId = ['id' => 'invalid'];
 
         $response = $this->actingAs($this->subscriber)
-            ->getJson(route('v1.subscriber', $subscriberId));
+            ->getJson(route('v1.subscriber.show', $subscriberId));
 
         $response->assertBadRequest();
         $response->assertSee('The specified subscriber ID is not valid.');
@@ -30,7 +30,7 @@ describe('Get Subscriber', function () {
         $subscriberId = ['id' => Str::uuid()->toString()];
 
         $response = $this->actingAs($this->subscriber)
-            ->getJson(route('v1.subscriber', $subscriberId));
+            ->getJson(route('v1.subscriber.show', $subscriberId));
 
         $response->assertNotFound();
     });
@@ -39,7 +39,7 @@ describe('Get Subscriber', function () {
         $subscriberId = ['id' => $this->subscriber->id];
 
         $response = $this->actingAs($this->subscriber)
-            ->getJson(route('v1.subscriber', $subscriberId));
+            ->getJson(route('v1.subscriber.show', $subscriberId));
 
         $response->assertOk();
         $response->assertJson($this->subscriber->toArray());
