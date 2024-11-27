@@ -78,6 +78,13 @@ class User extends Authenticatable
         );
     }
 
+    protected function secretWord(): Attribute
+    {
+        return Attribute::make(
+            get: fn (?string $value) => $value ? Str::upper($value) : null
+        );
+    }
+
     public function scopeSubscriber(Builder $query): void
     {
         $query->where('role', 'subscriber');
