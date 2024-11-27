@@ -163,5 +163,7 @@ return [
         ],
     ],
 
-    'attributes' => [],
+    'attributes' => [
+        'mei' => 'MEI',
+    ],
 ];

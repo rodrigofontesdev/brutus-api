@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\V1\AuthenticationException;
+use App\Exceptions\V1\MethodNotAllowedException;
 use App\Http\Middleware\EnsureLogHasContext;
 use Illuminate\Auth\AuthenticationException as BuiltInAuthenticationException;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -9,6 +10,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -20,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
+        $middleware->append([
+            EnsureLogHasContext::class,
+        ]);
         $middleware->api(append: [
             StartSession::class,
             EnsureLogHasContext::class,
@@ -30,7 +35,14 @@ return Application::configure(basePath: dirname(__DIR__))
             throw_if(
                 $request->is('api/*'),
                 AuthenticationException::class,
-                'Unauthenticated user attempted to access a protected route.'
+                $request->route()->getControllerClass().':: Unauthenticated user attempted to access a protected route.'
+            );
+        })
+        ->render(function (MethodNotAllowedHttpException $error, Request $request) {
+            throw_if(
+                $request->is('api/*'),
+                MethodNotAllowedException::class,
+                headers: $error->getHeaders()
             );
         })
         ->throttle(function (Throwable $error) {

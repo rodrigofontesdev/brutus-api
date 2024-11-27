@@ -5,6 +5,7 @@ use App\Http\Controllers\V1\GetSubscriber;
 use App\Http\Controllers\V1\SignIn;
 use App\Http\Controllers\V1\SignOut;
 use App\Http\Controllers\V1\SignUp;
+use App\Http\Controllers\V1\UpdateSubscriber;
 use Illuminate\Support\Facades\Route;
 
 Route::name('v1.')
@@ -27,4 +28,8 @@ Route::name('v1.')
         Route::get('/subscribers/{id}', GetSubscriber::class)
             ->middleware('auth:sanctum')
             ->name('subscriber.show');
+
+        Route::patch('/subscribers/{id}', UpdateSubscriber::class)
+            ->middleware('auth:sanctum')
+            ->name('subscriber.update');
     });

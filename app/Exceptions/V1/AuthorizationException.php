@@ -2,13 +2,18 @@
 
 namespace App\Exceptions\V1;
 
-use Illuminate\Contracts\Debug\ShouldntReport;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 
-class AuthorizationException extends \Exception implements ShouldntReport
+class AuthorizationException extends \Exception
 {
+    public function report(): void
+    {
+        Log::error($this->message);
+    }
+
     public function render(Request $request): JsonResponse
     {
         return Response::json([
