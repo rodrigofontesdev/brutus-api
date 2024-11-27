@@ -16,14 +16,14 @@ describe('Get Subscriber', function () {
         $response->assertUnauthorized();
     });
 
-    it('should return a bad request if the ID parameter is an invalid UUID', function () {
+    it('should return a bad request if subscriber ID is an invalid UUID', function () {
         $subscriberId = ['id' => 'invalid'];
 
         $response = $this->actingAs($this->subscriber)
             ->getJson(route('v1.subscriber.show', $subscriberId));
 
         $response->assertBadRequest();
-        $response->assertSee('The specified subscriber ID is not valid.');
+        $response->assertSee('The specified subscriber ID in URL is invalid.');
     });
 
     it('should return a not found response for non-existent subscribers', function () {
@@ -34,6 +34,19 @@ describe('Get Subscriber', function () {
 
         $response->assertNotFound();
     });
+
+    it(
+        'should return a forbidden response if the user attempts to obtain another subscriber\'s profile',
+        function () {
+            $anotherSubscriber = User::factory()->create();
+            $subscriberId = ['id' => $anotherSubscriber->id];
+
+            $response = $this->actingAs($this->subscriber)
+                ->getJson(route('v1.subscriber.show', $subscriberId));
+
+            $response->assertForbidden();
+        }
+    );
 
     it('should return the requested subscriber profile', function () {
         $subscriberId = ['id' => $this->subscriber->id];
