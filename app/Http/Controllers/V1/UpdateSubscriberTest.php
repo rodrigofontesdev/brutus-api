@@ -152,6 +152,17 @@ describe('Update Subscriber', function () {
         $response->assertSee('The secret word field must not be greater than 50 characters.');
     });
 
+    it('should return a bad request if incorporation date is invalid', function () {
+        $subscriberId = ['id' => $this->subscriber->id];
+        $payload = ['incorporation_date' => '28112024'];
+
+        $response = $this->actingAs($this->subscriber)
+            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+
+        $response->assertBadRequest();
+        $response->assertSee('The incorporation date field must match the format Y-m-d.');
+    });
+
     it('should update subscriber\'s email', function () {
         $subscriberId = ['id' => $this->subscriber->id];
         $payload = ['email' => 'doe@example.com'];
@@ -257,6 +268,22 @@ describe('Update Subscriber', function () {
         );
         $this->assertDatabaseHas('users', [
             'secret_word' => 'super secret',
+        ]);
+    });
+
+    it('should update subscriber\'s incorporation date', function () {
+        $subscriberId = ['id' => $this->subscriber->id];
+        $payload = ['incorporation_date' => '2022-09-13'];
+
+        $response = $this->actingAs($this->subscriber)
+            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+
+        $response->assertOk();
+        $response->assertJson(
+            fn (AssertableJson $json) => $json->where('incorporation_date', '2022-09-13')->etc()
+        );
+        $this->assertDatabaseHas('users', [
+            'incorporation_date' => '2022-09-13',
         ]);
     });
 });

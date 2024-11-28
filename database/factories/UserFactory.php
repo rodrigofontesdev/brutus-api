@@ -21,6 +21,7 @@ class UserFactory extends Factory
             'state' => fake()->randomElement(['SP', 'RJ', 'MG']),
             'mei' => fake()->randomElement(['MEI-GERAL', 'MEI-TAC']),
             'secret_word' => fake()->word(),
+            'incorporation_date' => fake()->dateTimeBetween(startDate: '-5 years')->format('Y-m-d'),
         ];
     }
 
@@ -31,6 +32,7 @@ class UserFactory extends Factory
             'state' => null,
             'mei' => null,
             'secret_word' => null,
+            'incorporation_date' => null,
         ]);
     }
 }

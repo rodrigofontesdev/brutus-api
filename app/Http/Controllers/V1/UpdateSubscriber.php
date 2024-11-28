@@ -96,6 +96,10 @@ class UpdateSubscriber extends Controller
                 $subscriber->secret_word = $data->secret_word;
             }
 
+            if ($data->filled('incorporation_date')) {
+                $subscriber->incorporation_date = $data->incorporation_date;
+            }
+
             $subscriber->save();
 
             return $subscriber;
