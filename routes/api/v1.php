@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Authenticate;
+use App\Http\Controllers\V1\DeleteSubscriber;
 use App\Http\Controllers\V1\GetSubscriber;
 use App\Http\Controllers\V1\SignIn;
 use App\Http\Controllers\V1\SignOut;
@@ -32,4 +33,8 @@ Route::name('v1.')
         Route::patch('/subscribers/{id}', UpdateSubscriber::class)
             ->middleware('auth:sanctum')
             ->name('subscriber.update');
+
+        Route::delete('/subscribers/{id}', DeleteSubscriber::class)
+            ->middleware('auth:sanctum')
+            ->name('subscriber.delete');
     });

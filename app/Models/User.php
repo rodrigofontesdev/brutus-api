@@ -89,4 +89,9 @@ class User extends Authenticatable
     {
         $query->where('role', 'subscriber');
     }
+
+    public function isSubscriber(): bool
+    {
+        return 'subscriber' === $this->role;
+    }
 }

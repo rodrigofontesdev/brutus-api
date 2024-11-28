@@ -19,7 +19,11 @@ class EnsureLogHasContext
         $requestContext['path'] = $request->path();
         $requestContext['method'] = $request->method();
 
-        if (!$request->isMethod('GET')) {
+        $shouldLogRequestBody = $request->isMethod('POST')
+            || $request->isMethod('PATCH')
+            || $request->isMethod('PUT');
+
+        if ($shouldLogRequestBody) {
             $requestContext['body'] = $request->except(['email', 'mobile_phone', 'secret_word']);
         }
 
