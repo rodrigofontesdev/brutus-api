@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 beforeAll(function () {
     function baseRoute(array $params)
     {
-        return route('v1.subscriber.delete', $params);
+        return route('v1.subscribers.delete', $params);
     }
 });
 

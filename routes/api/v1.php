@@ -28,13 +28,13 @@ Route::name('v1.')
 
         Route::get('/subscribers/{id}', GetSubscriber::class)
             ->middleware('auth:sanctum')
-            ->name('subscriber.show');
+            ->name('subscribers.show');
 
         Route::patch('/subscribers/{id}', UpdateSubscriber::class)
             ->middleware('auth:sanctum')
-            ->name('subscriber.update');
+            ->name('subscribers.update');
 
         Route::delete('/subscribers/{id}', DeleteSubscriber::class)
             ->middleware('auth:sanctum')
-            ->name('subscriber.delete');
+            ->name('subscribers.delete');
     });

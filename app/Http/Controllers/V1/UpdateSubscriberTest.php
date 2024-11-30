@@ -12,7 +12,7 @@ describe('Update Subscriber', function () {
     it('should return an unauthorized response for unauthenticated requests', function () {
         $subscriberId = ['id' => Str::uuid()->toString()];
 
-        $response = $this->patchJson(route('v1.subscriber.update', $subscriberId));
+        $response = $this->patchJson(route('v1.subscribers.update', $subscriberId));
 
         $response->assertUnauthorized();
     });
@@ -21,7 +21,7 @@ describe('Update Subscriber', function () {
         $subscriberId = ['id' => 'invalid'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId));
+            ->patchJson(route('v1.subscribers.update', $subscriberId));
 
         $response->assertBadRequest();
         $response->assertSee('The specified subscriber ID in URL is invalid.');
@@ -31,7 +31,7 @@ describe('Update Subscriber', function () {
         $subscriberId = ['id' => Str::uuid()->toString()];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId));
+            ->patchJson(route('v1.subscribers.update', $subscriberId));
 
         $response->assertNotFound();
     });
@@ -44,7 +44,7 @@ describe('Update Subscriber', function () {
             $payload = ['full_name' => 'John Doe'];
 
             $response = $this->actingAs($this->subscriber)
-                ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+                ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
             $response->assertForbidden();
         }
@@ -55,7 +55,7 @@ describe('Update Subscriber', function () {
         $payload = ['email' => 'invalid@mail'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The email field must be a valid email address.');
@@ -68,7 +68,7 @@ describe('Update Subscriber', function () {
             $payload = ['email' => $anotherUser->email];
 
             $response = $this->actingAs($this->subscriber)
-                ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+                ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
             $response->assertBadRequest();
             $response->assertSee('The email has already been taken.');
@@ -80,7 +80,7 @@ describe('Update Subscriber', function () {
         $payload = ['email' => mb_str_pad('doe@example.com', 150, 'doe', STR_PAD_LEFT)];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The email field must not be greater than 100 characters.');
@@ -91,7 +91,7 @@ describe('Update Subscriber', function () {
         $payload = ['full_name' => str_repeat('John Doe', 50)];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The full name field must not be greater than 100 characters.');
@@ -102,7 +102,7 @@ describe('Update Subscriber', function () {
         $payload = ['mobile_phone' => $mobilePhone];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The mobile phone field has an invalid format.');
@@ -113,7 +113,7 @@ describe('Update Subscriber', function () {
         $payload = ['city' => str_repeat('São Paulo', 50)];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The city field must not be greater than 100 characters.');
@@ -124,7 +124,7 @@ describe('Update Subscriber', function () {
         $payload = ['state' => 'AB'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The selected state is invalid.');
@@ -135,7 +135,7 @@ describe('Update Subscriber', function () {
         $payload = ['mei' => 'QUALQUER-COISA'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The selected MEI is invalid.');
@@ -146,7 +146,7 @@ describe('Update Subscriber', function () {
         $payload = ['secret_word' => str_repeat('Lorem Ipsum', 10)];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The secret word field must not be greater than 50 characters.');
@@ -157,7 +157,7 @@ describe('Update Subscriber', function () {
         $payload = ['incorporation_date' => '28112024'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertBadRequest();
         $response->assertSee('The incorporation date field must match the format Y-m-d.');
@@ -168,7 +168,7 @@ describe('Update Subscriber', function () {
         $payload = ['email' => 'doe@example.com'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertOk();
         $response->assertJson(
@@ -184,7 +184,7 @@ describe('Update Subscriber', function () {
         $payload = ['full_name' => 'John Doe'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertOk();
         $response->assertJson(
@@ -200,7 +200,7 @@ describe('Update Subscriber', function () {
         $payload = ['mobile_phone' => '11999887766'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertOk();
         $response->assertJson(
@@ -216,7 +216,7 @@ describe('Update Subscriber', function () {
         $payload = ['city' => 'Acrelândia'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertOk();
         $response->assertJson(fn (AssertableJson $json) => $json->where('city', 'Acrelândia')->etc());
@@ -230,7 +230,7 @@ describe('Update Subscriber', function () {
         $payload = ['state' => 'AC'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertOk();
         $response->assertJson(fn (AssertableJson $json) => $json->where('state', 'AC')->etc());
@@ -244,7 +244,7 @@ describe('Update Subscriber', function () {
         $payload = ['mei' => 'MEI-GERAL'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertOk();
         $response->assertJson(
@@ -260,7 +260,7 @@ describe('Update Subscriber', function () {
         $payload = ['secret_word' => 'super secret'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertOk();
         $response->assertJson(
@@ -276,7 +276,7 @@ describe('Update Subscriber', function () {
         $payload = ['incorporation_date' => '2022-09-13'];
 
         $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscriber.update', $subscriberId), $payload);
+            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
 
         $response->assertOk();
         $response->assertJson(
