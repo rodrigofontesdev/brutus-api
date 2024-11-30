@@ -42,6 +42,14 @@ class User extends Authenticatable
         return $this->magicLinks()->one()->latest('expires_at');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Report, $this>
+     */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Report::class, 'user', 'id');
+    }
+
     protected function cnpj(): Attribute
     {
         return Attribute::make(

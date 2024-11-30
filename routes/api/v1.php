@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\V1\Authenticate;
 use App\Http\Controllers\V1\DeleteSubscriber;
+use App\Http\Controllers\V1\GetReports;
 use App\Http\Controllers\V1\GetSubscriber;
 use App\Http\Controllers\V1\SignIn;
 use App\Http\Controllers\V1\SignOut;
@@ -37,4 +38,8 @@ Route::name('v1.')
         Route::delete('/subscribers/{id}', DeleteSubscriber::class)
             ->middleware('auth:sanctum')
             ->name('subscribers.delete');
+
+        Route::get('/reports', GetReports::class)
+            ->middleware('auth:sanctum')
+            ->name('reports.index');
     });

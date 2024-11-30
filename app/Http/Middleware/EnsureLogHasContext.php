@@ -16,7 +16,7 @@ class EnsureLogHasContext
     public function handle(Request $request, \Closure $next): Response
     {
         $context['context_id'] = Str::ulid()->toString();
-        $requestContext['path'] = $request->path();
+        $requestContext['path'] = $request->fullUrl();
         $requestContext['method'] = $request->method();
 
         $shouldLogRequestBody = $request->isMethod('POST')
