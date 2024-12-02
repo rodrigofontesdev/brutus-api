@@ -3,13 +3,6 @@
 use App\Models\User;
 use Illuminate\Support\Str;
 
-beforeAll(function () {
-    function baseRoute(array $params)
-    {
-        return route('v1.subscribers.delete', $params);
-    }
-});
-
 describe('Delete Subscriber', function () {
     beforeEach(function () {
         $this->subscriber = User::factory()->create();
@@ -18,7 +11,7 @@ describe('Delete Subscriber', function () {
     it('should return an unauthorized response for unauthenticated requests', function () {
         $subscriberId = ['id' => Str::uuid()->toString()];
 
-        $response = $this->deleteJson(baseRoute($subscriberId));
+        $response = $this->deleteJson(route('v1.subscribers.delete', $subscriberId));
 
         $response->assertUnauthorized();
     });
@@ -26,7 +19,8 @@ describe('Delete Subscriber', function () {
     it('should return a bad request if subscriber ID is an invalid UUID', function () {
         $subscriberId = ['id' => 'invalid'];
 
-        $response = $this->actingAs($this->subscriber)->deleteJson(baseRoute($subscriberId));
+        $response = $this->actingAs($this->subscriber)
+            ->deleteJson(route('v1.subscribers.delete', $subscriberId));
 
         $response->assertBadRequest();
         $response->assertSee('The specified subscriber ID in URL is invalid.');
@@ -35,7 +29,8 @@ describe('Delete Subscriber', function () {
     it('should return a not found response for non-existent subscribers', function () {
         $subscriberId = ['id' => Str::uuid()->toString()];
 
-        $response = $this->actingAs($this->subscriber)->deleteJson(baseRoute($subscriberId));
+        $response = $this->actingAs($this->subscriber)
+            ->deleteJson(route('v1.subscribers.delete', $subscriberId));
 
         $response->assertNotFound();
     });
@@ -46,16 +41,18 @@ describe('Delete Subscriber', function () {
             $anotherSubscriber = User::factory()->create();
             $subscriberId = ['id' => $anotherSubscriber->id];
 
-            $response = $this->actingAs($this->subscriber)->deleteJson(baseRoute($subscriberId));
+            $response = $this->actingAs($this->subscriber)
+                ->deleteJson(route('v1.subscribers.delete', $subscriberId));
 
             $response->assertForbidden();
         }
     );
 
-    it('should delete subscriber in the database', function () {
+    it('should delete subscriber from the database', function () {
         $subscriberId = ['id' => $this->subscriber->id];
 
-        $response = $this->actingAs($this->subscriber)->deleteJson(baseRoute($subscriberId));
+        $response = $this->actingAs($this->subscriber)
+            ->deleteJson(route('v1.subscribers.delete', $subscriberId));
 
         $response->assertOk();
         $this->assertSoftDeleted($this->subscriber);
@@ -66,7 +63,8 @@ describe('Delete Subscriber', function () {
         function () {
             $subscriberId = ['id' => $this->subscriber->id];
 
-            $response = $this->actingAs($this->subscriber)->deleteJson(baseRoute($subscriberId));
+            $response = $this->actingAs($this->subscriber)
+                ->deleteJson(route('v1.subscribers.delete', $subscriberId));
 
             $response->assertOk();
             $this->assertGuest('web');

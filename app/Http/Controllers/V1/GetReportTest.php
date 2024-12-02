@@ -4,13 +4,6 @@ use App\Models\Report;
 use App\Models\User;
 use Illuminate\Support\Str;
 
-beforeAll(function () {
-    function baseRoute(array $params)
-    {
-        return route('v1.reports.show', $params);
-    }
-});
-
 describe('Get Report', function () {
     beforeEach(function () {
         $this->subscriber = User::factory()->create();
@@ -19,7 +12,7 @@ describe('Get Report', function () {
     it('should return an unauthorized response for unauthenticated requests', function () {
         $reportId = ['id' => Str::uuid()->toString()];
 
-        $response = $this->getJson(baseRoute($reportId));
+        $response = $this->getJson(route('v1.reports.show', $reportId));
 
         $response->assertUnauthorized();
     });
@@ -27,7 +20,8 @@ describe('Get Report', function () {
     it('should return a bad request if report ID is an invalid UUID', function () {
         $reportId = ['id' => 'invalid'];
 
-        $response = $this->actingAs($this->subscriber)->getJson(baseRoute($reportId));
+        $response = $this->actingAs($this->subscriber)
+            ->getJson(route('v1.reports.show', $reportId));
 
         $response->assertBadRequest();
         $response->assertSee('The specified report ID in URL is invalid.');
@@ -36,7 +30,8 @@ describe('Get Report', function () {
     it('should return a not found response for non-existent reports', function () {
         $reportId = ['id' => Str::uuid()->toString()];
 
-        $response = $this->actingAs($this->subscriber)->getJson(baseRoute($reportId));
+        $response = $this->actingAs($this->subscriber)
+            ->getJson(route('v1.reports.show', $reportId));
 
         $response->assertNotFound();
     });
@@ -47,7 +42,8 @@ describe('Get Report', function () {
             $anotherSubscriber = User::factory()->has(Report::factory())->create();
             $reportId = ['id' => $anotherSubscriber->reports[0]->id];
 
-            $response = $this->actingAs($this->subscriber)->getJson(baseRoute($reportId));
+            $response = $this->actingAs($this->subscriber)
+                ->getJson(route('v1.reports.show', $reportId));
 
             $response->assertForbidden();
         }
@@ -57,7 +53,8 @@ describe('Get Report', function () {
         $report = Report::factory()->state(['user' => $this->subscriber->id])->create();
         $reportId = ['id' => $report->id];
 
-        $response = $this->actingAs($this->subscriber)->getJson(baseRoute($reportId));
+        $response = $this->actingAs($this->subscriber)
+            ->getJson(route('v1.reports.show', $reportId));
 
         $response->assertOk();
         $response->assertJson($report->toArray());
