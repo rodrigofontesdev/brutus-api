@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\V1\Authenticate;
 use App\Http\Controllers\V1\DeleteSubscriber;
+use App\Http\Controllers\V1\GetReport;
 use App\Http\Controllers\V1\GetReports;
 use App\Http\Controllers\V1\GetSubscriber;
 use App\Http\Controllers\V1\SignIn;
@@ -42,4 +43,8 @@ Route::name('v1.')
         Route::get('/reports', GetReports::class)
             ->middleware('auth:sanctum')
             ->name('reports.index');
+
+        Route::get('/reports/{id}', GetReport::class)
+            ->middleware('auth:sanctum')
+            ->name('reports.show');
     });
