@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Authenticate;
+use App\Http\Controllers\V1\DeleteReport;
 use App\Http\Controllers\V1\DeleteSubscriber;
 use App\Http\Controllers\V1\GetReport;
 use App\Http\Controllers\V1\GetReports;
@@ -47,4 +48,8 @@ Route::name('v1.')
         Route::get('/reports/{id}', GetReport::class)
             ->middleware('auth:sanctum')
             ->name('reports.show');
+
+        Route::delete('/reports/{id}', DeleteReport::class)
+            ->middleware('auth:sanctum')
+            ->name('reports.delete');
     });
