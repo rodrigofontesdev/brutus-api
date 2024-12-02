@@ -54,7 +54,7 @@ describe('Delete Subscriber', function () {
         $response = $this->actingAs($this->subscriber)
             ->deleteJson(route('v1.subscribers.delete', $subscriberId));
 
-        $response->assertOk();
+        $response->assertNoContent();
         $this->assertSoftDeleted($this->subscriber);
     });
 
@@ -66,7 +66,7 @@ describe('Delete Subscriber', function () {
             $response = $this->actingAs($this->subscriber)
                 ->deleteJson(route('v1.subscribers.delete', $subscriberId));
 
-            $response->assertOk();
+            $response->assertNoContent();
             $this->assertGuest('web');
         }
     );

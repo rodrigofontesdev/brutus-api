@@ -26,7 +26,7 @@ class DeleteSubscriber extends Controller
      * @throws App\Exceptions\V1\NotFoundException
      * @throws App\Exceptions\V1\AuthorizationException
      */
-    public function __invoke(Request $request, string $id)
+    public function __invoke(Request $request, string $id): JsonResponse
     {
         throw_unless(
             Str::isUuid($id),
@@ -63,7 +63,7 @@ class DeleteSubscriber extends Controller
             ['subscriber' => $subscriber->toArray()]
         );
 
-        return Response::json(status: JsonResponse::HTTP_OK);
+        return Response::json(status: JsonResponse::HTTP_NO_CONTENT);
     }
 
     private function killSubscriberSession(Request $request): void
