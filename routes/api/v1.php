@@ -9,6 +9,7 @@ use App\Http\Controllers\V1\GetSubscriber;
 use App\Http\Controllers\V1\SignIn;
 use App\Http\Controllers\V1\SignOut;
 use App\Http\Controllers\V1\SignUp;
+use App\Http\Controllers\V1\UpdateReport;
 use App\Http\Controllers\V1\UpdateSubscriber;
 use Illuminate\Support\Facades\Route;
 
@@ -48,6 +49,11 @@ Route::name('v1.')
         Route::get('/reports/{id}', GetReport::class)
             ->middleware('auth:sanctum')
             ->name('reports.show');
+
+        Route::put('/reports/{report}', UpdateReport::class)
+            ->middleware('auth:sanctum')
+            ->can('update', 'report')
+            ->name('reports.update');
 
         Route::delete('/reports/{id}', DeleteReport::class)
             ->middleware('auth:sanctum')

@@ -18,7 +18,7 @@ class AuthorizationException extends \Exception
     {
         return Response::json([
             'type' => 'AUTHORIZATION_ERROR',
-            'message' => 'Your current permissions do not allow access to this resource.',
+            'message' => 'Your current permissions do not allow to perform this action.',
             'path' => $request->fullUrl(),
             'started_at' => now()->toDateTimeString(),
         ], JsonResponse::HTTP_FORBIDDEN);

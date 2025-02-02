@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,11 +13,58 @@ class Report extends Model
     use HasFactory;
     use HasUuids;
 
+    protected $guarded = [
+        'user',
+        'period',
+    ];
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, $this>
      */
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user', 'id');
+    }
+
+    protected function tradeWithInvoice(): Attribute
+    {
+        return Attribute::make(
+            set: fn (int $value) => $value === 0 ? null : $value,
+        );
+    }
+
+    protected function tradeWithoutInvoice(): Attribute
+    {
+        return Attribute::make(
+            set: fn (int $value) => $value === 0 ? null : $value,
+        );
+    }
+
+    protected function industryWithInvoice(): Attribute
+    {
+        return Attribute::make(
+            set: fn (int $value) => $value === 0 ? null : $value,
+        );
+    }
+
+    protected function industryWithoutInvoice(): Attribute
+    {
+        return Attribute::make(
+            set: fn (int $value) => $value === 0 ? null : $value,
+        );
+    }
+
+    protected function servicesWithInvoice(): Attribute
+    {
+        return Attribute::make(
+            set: fn (int $value) => $value === 0 ? null : $value,
+        );
+    }
+
+    protected function servicesWithoutInvoice(): Attribute
+    {
+        return Attribute::make(
+            set: fn (int $value) => $value === 0 ? null : $value,
+        );
     }
 }

@@ -55,24 +55,24 @@ class ReportFactory extends Factory
     public function withoutTradeInvoice(): static
     {
         return $this->state(fn () => [
-            'trade_with_invoice' => null,
-            'trade_without_invoice' => null,
+            'trade_with_invoice' => 0,
+            'trade_without_invoice' => 0,
         ]);
     }
 
     public function withoutIndustryInvoice(): static
     {
         return $this->state(fn () => [
-            'industry_with_invoice' => null,
-            'industry_without_invoice' => null,
+            'industry_with_invoice' => 0,
+            'industry_without_invoice' => 0,
         ]);
     }
 
     public function withoutServicesInvoice(): static
     {
         return $this->state(fn () => [
-            'services_with_invoice' => null,
-            'services_without_invoice' => null,
+            'services_with_invoice' => 0,
+            'services_without_invoice' => 0,
         ]);
     }
 }
