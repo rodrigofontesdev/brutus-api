@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\User;
+use App\Notifications\CompleteMonthlyReport;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Stringable;
 
@@ -44,3 +47,17 @@ Schedule::command('queue:monitor database:default --max=100')
             ['output' => $output]
         );
     });
+
+Schedule::call(function() {
+    $subscribers = User::subscriber()->get();
+    Notification::send($subscribers, new CompleteMonthlyReport);
+})
+->monthly()
+->mondays()
+->at('16:00')
+->onFailure(function (Stringable $output) {
+    Log::warning(
+        'Schedule:: Remind subscribers to fill out the monthly report was not possible.',
+        ['output' => $output]
+    );
+});
