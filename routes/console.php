@@ -2,6 +2,8 @@
 
 use App\Models\User;
 use App\Notifications\CompleteMonthlyReport;
+use App\Notifications\DasWaitingPayment;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Schedule;
@@ -49,8 +51,9 @@ Schedule::command('queue:monitor database:default --max=100')
     });
 
 Schedule::call(function() {
-    $subscribers = User::subscriber()->get();
-    Notification::send($subscribers, new CompleteMonthlyReport);
+    User::subscriber()->chunk(500, function(Collection $subscribers) {
+        Notification::send($subscribers, new CompleteMonthlyReport);
+    });
 })
 ->monthly()
 ->mondays()
@@ -58,6 +61,19 @@ Schedule::call(function() {
 ->onFailure(function (Stringable $output) {
     Log::warning(
         'Schedule:: Remind subscribers to fill out the monthly report was not possible.',
+        ['output' => $output]
+    );
+});
+
+Schedule::call(function() {
+    User::subscriber()->chunk(500, function(Collection $subscribers) {
+        Notification::send($subscribers, new DasWaitingPayment);
+    });
+})
+->monthlyOn(15, '07:00')
+->onFailure(function (Stringable $output) {
+    Log::warning(
+        'Schedule:: Remind subscribers to pay the DAS was not possible.',
         ['output' => $output]
     );
 });

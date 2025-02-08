@@ -11,6 +11,9 @@ use App\Http\Controllers\V1\SignOut;
 use App\Http\Controllers\V1\SignUp;
 use App\Http\Controllers\V1\UpdateReport;
 use App\Http\Controllers\V1\UpdateSubscriber;
+use App\Models\User;
+use App\Notifications\CompleteMonthlyReport;
+use App\Notifications\DasWaitingPayment;
 use Illuminate\Support\Facades\Route;
 
 Route::name('v1.')
@@ -59,3 +62,12 @@ Route::name('v1.')
             ->middleware('auth:sanctum')
             ->name('reports.delete');
     });
+
+Route::get('/notification', function () {
+    $user = User::find('9e1db7bf-bb7a-43ca-8d1d-72fe157bbd74');
+
+    // $user->notify(new DasWaitingPayment($user));
+
+    // return (new CompleteMonthlyReport($user))->toMail($user);
+    return (new DasWaitingPayment($user))->toMail($user);
+});
