@@ -14,6 +14,7 @@ use App\Http\Controllers\V1\UpdateSubscriber;
 use App\Models\User;
 use App\Notifications\CompleteMonthlyReport;
 use App\Notifications\DasWaitingPayment;
+use App\Notifications\SendDasnSimeiStatement;
 use Illuminate\Support\Facades\Route;
 
 Route::name('v1.')
@@ -69,5 +70,6 @@ Route::get('/notification', function () {
     // $user->notify(new DasWaitingPayment($user));
 
     // return (new CompleteMonthlyReport($user))->toMail($user);
-    return (new DasWaitingPayment($user))->toMail($user);
+    // return (new DasWaitingPayment($user))->toMail($user);
+    return (new SendDasnSimeiStatement($user))->toMail($user);
 });

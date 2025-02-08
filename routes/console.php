@@ -3,6 +3,7 @@
 use App\Models\User;
 use App\Notifications\CompleteMonthlyReport;
 use App\Notifications\DasWaitingPayment;
+use App\Notifications\SendDasnSimeiStatement;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -74,6 +75,19 @@ Schedule::call(function() {
 ->onFailure(function (Stringable $output) {
     Log::warning(
         'Schedule:: Remind subscribers to pay the DAS was not possible.',
+        ['output' => $output]
+    );
+});
+
+Schedule::call(function() {
+    User::subscriber()->chunk(500, function(Collection $subscribers) {
+        Notification::send($subscribers, new SendDasnSimeiStatement);
+    });
+})
+->yearlyOn(1, 20, '08:00')
+->onFailure(function (Stringable $output) {
+    Log::warning(
+        'Schedule:: Remind subscribers to send the DASN-SIMEI was not possible.',
         ['output' => $output]
     );
 });
