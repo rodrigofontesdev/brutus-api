@@ -1,7 +1,9 @@
 <?php
 
+use App\Events\AnnualRevenueChanged;
 use App\Models\Report;
 use App\Models\User;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
 describe('Delete Report', function () {
@@ -50,7 +52,7 @@ describe('Delete Report', function () {
     );
 
     it('should delete report from the database', function () {
-        $report = Report::factory()->state(['user' => $this->subscriber->id])->create();
+        $report = Report::factory()->for($this->subscriber, 'owner')->create();
         $reportId = ['id' => $report->id];
 
         $response = $this->actingAs($this->subscriber)
@@ -58,5 +60,17 @@ describe('Delete Report', function () {
 
         $response->assertNoContent();
         $this->assertDatabaseMissing($report);
+    });
+
+    it('should dispatch an event to notify that the annual revenue has changed', function() {
+        Event::fake();
+        $report = Report::factory()->for($this->subscriber, 'owner')->create();
+        $reportId = ['id' => $report->id];
+
+        $response = $this->actingAs($this->subscriber)
+            ->deleteJson(route('v1.reports.delete', $reportId));
+
+        Event::assertDispatched(AnnualRevenueChanged::class);
+        $response->assertNoContent();
     });
 });

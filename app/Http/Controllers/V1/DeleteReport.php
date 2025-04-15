@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Events\AnnualRevenueChanged;
 use App\Exceptions\V1\AuthorizationException;
 use App\Exceptions\V1\InvalidRequestException;
 use App\Exceptions\V1\NotFoundException;
@@ -49,6 +50,8 @@ class DeleteReport extends Controller
         );
 
         $report->delete();
+
+        AnnualRevenueChanged::dispatch();
 
         Log::info(
             self::class.':: Finishing to delete report.',
