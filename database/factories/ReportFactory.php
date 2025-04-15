@@ -75,4 +75,34 @@ class ReportFactory extends Factory
             'services_without_invoice' => 0,
         ]);
     }
+
+    public function onlyTradeInvoice(): static
+    {
+        return $this->state(fn () => [
+            'industry_with_invoice' => 0,
+            'industry_without_invoice' => 0,
+            'services_with_invoice' => 0,
+            'services_without_invoice' => 0,
+        ]);
+    }
+
+    public function onlyIndustryInvoice(): static
+    {
+        return $this->state(fn () => [
+            'trade_with_invoice' => 0,
+            'trade_without_invoice' => 0,
+            'services_with_invoice' => 0,
+            'services_without_invoice' => 0,
+        ]);
+    }
+
+    public function onlyServicesInvoice(): static
+    {
+        return $this->state(fn () => [
+            'trade_with_invoice' => 0,
+            'trade_without_invoice' => 0,
+            'industry_with_invoice' => 0,
+            'industry_without_invoice' => 0,
+        ]);
+    }
 }

@@ -130,17 +130,6 @@ describe('Update Subscriber', function () {
         $response->assertSee('The selected state is invalid.');
     });
 
-    it('should return a bad request if MEI is invalid', function () {
-        $subscriberId = ['id' => $this->subscriber->id];
-        $payload = ['mei' => 'QUALQUER-COISA'];
-
-        $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
-
-        $response->assertBadRequest();
-        $response->assertSee('The selected MEI is invalid.');
-    });
-
     it('should return a bad request if secret word is greather than 50 characteres', function () {
         $subscriberId = ['id' => $this->subscriber->id];
         $payload = ['secret_word' => str_repeat('Lorem Ipsum', 10)];
@@ -150,17 +139,6 @@ describe('Update Subscriber', function () {
 
         $response->assertBadRequest();
         $response->assertSee('The secret word field must not be greater than 50 characters.');
-    });
-
-    it('should return a bad request if incorporation date is invalid', function () {
-        $subscriberId = ['id' => $this->subscriber->id];
-        $payload = ['incorporation_date' => '28112024'];
-
-        $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
-
-        $response->assertBadRequest();
-        $response->assertSee('The incorporation date field must match the format Y-m-d.');
     });
 
     it('should update subscriber\'s email', function () {
@@ -239,22 +217,6 @@ describe('Update Subscriber', function () {
         ]);
     });
 
-    it('should update subscriber\'s MEI', function () {
-        $subscriberId = ['id' => $this->subscriber->id];
-        $payload = ['mei' => 'MEI-GERAL'];
-
-        $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
-
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) => $json->where('mei', 'MEI-GERAL')->etc()
-        );
-        $this->assertDatabaseHas('users', [
-            'mei' => 'MEI-GERAL',
-        ]);
-    });
-
     it('should update subscriber\'s secret word', function () {
         $subscriberId = ['id' => $this->subscriber->id];
         $payload = ['secret_word' => 'super secret'];
@@ -268,22 +230,6 @@ describe('Update Subscriber', function () {
         );
         $this->assertDatabaseHas('users', [
             'secret_word' => 'super secret',
-        ]);
-    });
-
-    it('should update subscriber\'s incorporation date', function () {
-        $subscriberId = ['id' => $this->subscriber->id];
-        $payload = ['incorporation_date' => '2022-09-13'];
-
-        $response = $this->actingAs($this->subscriber)
-            ->patchJson(route('v1.subscribers.update', $subscriberId), $payload);
-
-        $response->assertOk();
-        $response->assertJson(
-            fn (AssertableJson $json) => $json->where('incorporation_date', '2022-09-13')->etc()
-        );
-        $this->assertDatabaseHas('users', [
-            'incorporation_date' => '2022-09-13',
         ]);
     });
 });

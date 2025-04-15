@@ -88,16 +88,8 @@ class UpdateSubscriber extends Controller
                 $subscriber->state = $data->state;
             }
 
-            if ($data->filled('mei')) {
-                $subscriber->mei = $data->mei;
-            }
-
             if ($data->filled('secret_word')) {
                 $subscriber->secret_word = $data->secret_word;
-            }
-
-            if ($data->filled('incorporation_date')) {
-                $subscriber->incorporation_date = $data->incorporation_date;
             }
 
             $subscriber->save();

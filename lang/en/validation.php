@@ -162,8 +162,4 @@ return [
             'exists' => 'The email provided does not matches to any user.',
         ],
     ],
-
-    'attributes' => [
-        'mei' => 'MEI',
-    ],
 ];

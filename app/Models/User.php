@@ -52,6 +52,22 @@ class User extends Authenticatable
         return $this->hasMany(Report::class, 'user', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MeiCategory, $this>
+     */
+    public function meiCategories(): HasMany
+    {
+        return $this->hasMany(MeiCategory::class, 'user', 'id')->latest('creation_date');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<MeiCategory, $this>
+     */
+    public function firstMeiCategory(): HasOne
+    {
+        return $this->hasOne(MeiCategory::class, 'user', 'id')->oldest('creation_date');
+    }
+
     protected function cnpj(): Attribute
     {
         return Attribute::make(
@@ -81,13 +97,6 @@ class User extends Authenticatable
         );
     }
 
-    protected function mei(): Attribute
-    {
-        return Attribute::make(
-            set: fn (?string $value) => $value ? Str::upper($value) : null
-        );
-    }
-
     protected function secretWord(): Attribute
     {
         return Attribute::make(
@@ -102,6 +111,6 @@ class User extends Authenticatable
 
     public function isSubscriber(): bool
     {
-        return 'subscriber' === $this->role;
+        return $this->role === 'subscriber';
     }
 }
