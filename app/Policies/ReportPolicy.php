@@ -7,7 +7,12 @@ use App\Models\User;
 
 class ReportPolicy
 {
-    public function get(User $user, Report $report): bool
+    public function view(User $user, Report $report): bool
+    {
+        return $user->id === $report->user;
+    }
+
+    public function create(User $user, Report $report): bool
     {
         return $user->id === $report->user;
     }

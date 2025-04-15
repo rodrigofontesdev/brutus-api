@@ -44,7 +44,7 @@ class GetReport extends Controller
         );
 
         throw_unless(
-            $request->user()->can('get', $report),
+            $request->user()->can('view', $report),
             AuthorizationException::class,
             message: self::class.':: User don\'t have sufficient permissions to obtain the requested report.'
         );

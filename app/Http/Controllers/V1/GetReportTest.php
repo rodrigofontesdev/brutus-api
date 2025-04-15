@@ -50,7 +50,7 @@ describe('Get Report', function () {
     );
 
     it('should return the requested report', function () {
-        $report = Report::factory()->state(['user' => $this->subscriber->id])->create();
+        $report = Report::factory()->for($this->subscriber, 'owner')->create();
         $reportId = ['id' => $report->id];
 
         $response = $this->actingAs($this->subscriber)
