@@ -1,7 +1,9 @@
 <?php
 
+use App\Events\AnnualRevenueChanged;
 use App\Models\Report;
 use App\Models\User;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
 describe('Update Report', function() {
@@ -10,16 +12,41 @@ describe('Update Report', function() {
     });
 
     it('should return an unauthorized response for unauthenticated requests', function () {
-        $reportId = ['report' => Str::uuid()->toString()];
+        $reportId = ['id' => Str::uuid()->toString()];
 
         $response = $this->putJson(route('v1.reports.update', $reportId));
 
         $response->assertUnauthorized();
     });
 
+    it('should return a bad request if report ID is an invalid UUID', function () {
+        $reportId = ['id' => 'invalid'];
+        $payload = [
+            'trade_with_invoice' => 100000,
+            'trade_without_invoice' => 0,
+            'industry_with_invoice' => 0,
+            'industry_without_invoice' => 0,
+            'services_with_invoice' => 0,
+            'services_without_invoice' => 0,
+        ];
+
+        $response = $this->actingAs($this->subscriber)
+            ->putJson(route('v1.reports.update', $reportId), $payload);
+
+        $response->assertBadRequest();
+        $response->assertSee('The specified report ID in URL is invalid.');
+    });
+
     it('should return a not found response for non-existent reports', function () {
-        $reportId = ['report' => Str::uuid()->toString()];
-        $payload = ['trade_with_invoice' => 100000];
+        $reportId = ['id' => Str::uuid()->toString()];
+        $payload = [
+            'trade_with_invoice' => 100000,
+            'trade_without_invoice' => 0,
+            'industry_with_invoice' => 0,
+            'industry_without_invoice' => 0,
+            'services_with_invoice' => 0,
+            'services_without_invoice' => 0,
+        ];
 
         $response = $this->actingAs($this->subscriber)
             ->putJson(route('v1.reports.update', $reportId), $payload);
@@ -31,8 +58,15 @@ describe('Update Report', function() {
         'should return a forbidden response if the user attempts to obtain another subscriber report',
         function () {
             $anotherSubscriber = User::factory()->has(Report::factory())->create();
-            $reportId = ['report' => $anotherSubscriber->reports[0]->id];
-            $payload = ['trade_with_invoice' => 100000];
+            $reportId = ['id' => $anotherSubscriber->reports[0]->id];
+            $payload = [
+                'trade_with_invoice' => 100000,
+                'trade_without_invoice' => 0,
+                'industry_with_invoice' => 0,
+                'industry_without_invoice' => 0,
+                'services_with_invoice' => 0,
+                'services_without_invoice' => 0,
+            ];
 
             $response = $this->actingAs($this->subscriber)
                 ->putJson(route('v1.reports.update', $reportId), $payload);
@@ -42,7 +76,7 @@ describe('Update Report', function() {
     );
 
     it('should return a bad request if missing required fields', function () {
-        $reportId = ['report' => $this->subscriber->reports[0]->id];
+        $reportId = ['id' => $this->subscriber->reports[0]->id];
 
         $response = $this->actingAs($this->subscriber)
             ->putJson(route('v1.reports.update', $reportId), []);
@@ -60,7 +94,7 @@ describe('Update Report', function() {
 
     it('should return a bad request if trade with invoice field is an invalid amount',
         function () {
-            $reportId = ['report' => $this->subscriber->reports[0]->id];
+            $reportId = ['id' => $this->subscriber->reports[0]->id];
             $payload = ['trade_with_invoice' => 1000.99];
 
             $response = $this->actingAs($this->subscriber)
@@ -73,7 +107,7 @@ describe('Update Report', function() {
 
     it('should return a bad request if trade without invoice field is an invalid amount',
         function () {
-            $reportId = ['report' => $this->subscriber->reports[0]->id];
+            $reportId = ['id' => $this->subscriber->reports[0]->id];
             $payload = ['trade_without_invoice' => 1000.99];
 
             $response = $this->actingAs($this->subscriber)
@@ -86,7 +120,7 @@ describe('Update Report', function() {
 
     it('should return a bad request if industry with invoice field is an invalid amount',
         function () {
-            $reportId = ['report' => $this->subscriber->reports[0]->id];
+            $reportId = ['id' => $this->subscriber->reports[0]->id];
             $payload = ['industry_with_invoice' => 1000.99];
 
             $response = $this->actingAs($this->subscriber)
@@ -99,7 +133,7 @@ describe('Update Report', function() {
 
     it('should return a bad request if industry without invoice field is an invalid amount',
         function () {
-            $reportId = ['report' => $this->subscriber->reports[0]->id];
+            $reportId = ['id' => $this->subscriber->reports[0]->id];
             $payload = ['industry_without_invoice' => 1000.99];
 
             $response = $this->actingAs($this->subscriber)
@@ -112,7 +146,7 @@ describe('Update Report', function() {
 
     it('should return a bad request if services with invoice field is an invalid amount',
         function () {
-            $reportId = ['report' => $this->subscriber->reports[0]->id];
+            $reportId = ['id' => $this->subscriber->reports[0]->id];
             $payload = ['services_with_invoice' => 1000.99];
 
             $response = $this->actingAs($this->subscriber)
@@ -125,7 +159,7 @@ describe('Update Report', function() {
 
     it('should return a bad request if services without invoice field is an invalid amount',
         function () {
-            $reportId = ['report' => $this->subscriber->reports[0]->id];
+            $reportId = ['id' => $this->subscriber->reports[0]->id];
             $payload = ['services_without_invoice' => 1000.99];
 
             $response = $this->actingAs($this->subscriber)
@@ -137,7 +171,7 @@ describe('Update Report', function() {
     );
 
     it('should update report in the database', function() {
-        $reportId = ['report' => $this->subscriber->reports[0]->id];
+        $reportId = ['id' => $this->subscriber->reports[0]->id];
         $payload = [
             'trade_with_invoice' => 100000,
             'trade_without_invoice' => 50000,
@@ -155,5 +189,24 @@ describe('Update Report', function() {
         $response->assertOk();
         $response->assertJson($updatedReport->toArray());
         $this->assertModelExists($updatedReport);
+    });
+
+    it('should dispatch an event to notify that the annual revenue has changed', function() {
+        Event::fake();
+        $reportId = ['id' => $this->subscriber->reports[0]->id];
+        $payload = [
+            'trade_with_invoice' => 100000,
+            'trade_without_invoice' => 50000,
+            'industry_with_invoice' => 50000,
+            'industry_without_invoice' => 200000,
+            'services_with_invoice' => 0,
+            'services_without_invoice' => 0,
+        ];
+
+        $response = $this->actingAs($this->subscriber)
+            ->putJson(route('v1.reports.update', $reportId), $payload);
+
+        Event::assertDispatched(AnnualRevenueChanged::class);
+        $response->assertOk();
     });
 });
