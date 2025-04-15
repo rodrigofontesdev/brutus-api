@@ -2,7 +2,6 @@
 
 use App\Models\MagicLink;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 describe('Authenticate', function () {
@@ -101,10 +100,8 @@ describe('Authenticate', function () {
 
         $response = $this->postJson($this->route, $payload);
 
-        $forwardOneDayAhead = now()->addDay();
-
-        Carbon::setTestNow($forwardOneDayAhead);
-        $response->assertCookieExpired(config('session.cookie'));
-        Carbon::setTestNow();
+        $this->travel(1)->days(function () use ($response) {
+            $response->assertCookieExpired(config('session.cookie'));
+        });
     });
 });
