@@ -12,11 +12,6 @@ class ReportPolicy
         return $user->id === $report->user;
     }
 
-    public function create(User $user, Report $report): bool
-    {
-        return $user->id === $report->user;
-    }
-
     public function update(User $user, Report $report): bool
     {
         return $user->id === $report->user;

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Authenticate;
+use App\Http\Controllers\V1\CreateReport;
 use App\Http\Controllers\V1\DeleteReport;
 use App\Http\Controllers\V1\DeleteSubscriber;
 use App\Http\Controllers\V1\GetReport;
@@ -49,6 +50,10 @@ Route::name('v1.')
         Route::get('/reports/{id}', GetReport::class)
             ->middleware('auth:sanctum')
             ->name('reports.show');
+
+        Route::post('/reports', CreateReport::class)
+            ->middleware('auth:sanctum')
+            ->name('reports.create');
 
         Route::put('/reports/{id}', UpdateReport::class)
             ->middleware('auth:sanctum')
