@@ -2,6 +2,7 @@
 
 use App\Models\MagicLink;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 describe('Authenticate', function () {
@@ -82,13 +83,15 @@ describe('Authenticate', function () {
             'redirect' => $this->redirectTo,
         ];
 
-        $this->postJson($this->route, $payload);
+        $this->freezeTime(function (Carbon $time) use ($payload) {
+            $this->postJson($this->route, $payload);
 
-        $this->assertAuthenticated('web');
-        $this->assertDatabaseHas('magic_links', [
-            'token' => $payload['token'],
-            'used_at' => now()->toDateTimeString(),
-        ]);
+            $this->assertAuthenticated('web');
+            $this->assertDatabaseHas('magic_links', [
+                'token' => $payload['token'],
+                'used_at' => $time->toDateTimeString(),
+            ]);
+        });
     });
 
     it('should expire user session after 24 hours', function () {
