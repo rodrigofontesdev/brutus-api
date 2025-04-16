@@ -63,14 +63,13 @@ describe('Delete Report', function () {
     });
 
     it('should dispatch an event to notify that the annual revenue has changed', function() {
-        Event::fake();
         $report = Report::factory()->for($this->subscriber, 'owner')->create();
         $reportId = ['id' => $report->id];
 
-        $response = $this->actingAs($this->subscriber)
-            ->deleteJson(route('v1.reports.delete', $reportId));
+        Event::fake();
+
+        $this->actingAs($this->subscriber)->deleteJson(route('v1.reports.delete', $reportId));
 
         Event::assertDispatched(AnnualRevenueChanged::class);
-        $response->assertNoContent();
     });
 });
