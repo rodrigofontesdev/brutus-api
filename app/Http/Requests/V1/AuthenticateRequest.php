@@ -20,7 +20,7 @@ class AuthenticateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'token' => ['required', 'uuid', 'exists:magic_links,token'],
+            'token' => ['required', 'uuid:4', 'exists:magic_links,token'],
             'redirect' => ['url:https'],
         ];
     }

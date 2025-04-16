@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
 class MagicLink extends Model
 {
     use HasFactory;
-    use HasUuids;
+    use HasVersion4Uuids;
     use Prunable;
 
     protected $primaryKey = 'token';
