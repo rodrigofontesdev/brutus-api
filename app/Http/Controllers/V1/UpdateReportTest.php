@@ -5,6 +5,7 @@ use App\Models\Report;
 use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use Illuminate\Testing\Fluent\AssertableJson;
 
 describe('Update Report', function() {
     beforeEach(function () {
@@ -170,7 +171,7 @@ describe('Update Report', function() {
         }
     );
 
-    it('should update report in the database', function() {
+    it('should update the report in the database', function() {
         $reportId = ['id' => $this->subscriber->reports[0]->id];
         $payload = [
             'trade_with_invoice' => 100000,
@@ -181,18 +182,34 @@ describe('Update Report', function() {
             'services_without_invoice' => 0,
         ];
 
-        $response = $this->actingAs($this->subscriber)
+        $this->actingAs($this->subscriber)
             ->putJson(route('v1.reports.update', $reportId), $payload);
 
-        $updatedReport = Report::find($reportId)->first();
+        $reportUpdated = Report::find($reportId)->first();
 
-        $response->assertOk();
-        $response->assertJson($updatedReport->toArray());
-        $this->assertModelExists($updatedReport);
+        $this->assertModelExists($reportUpdated);
     });
 
     it('should dispatch an event to notify that the annual revenue has changed', function() {
+        $reportId = ['id' => $this->subscriber->reports[0]->id];
+        $payload = [
+            'trade_with_invoice' => 100000,
+            'trade_without_invoice' => 50000,
+            'industry_with_invoice' => 50000,
+            'industry_without_invoice' => 200000,
+            'services_with_invoice' => 0,
+            'services_without_invoice' => 0,
+        ];
+
         Event::fake();
+
+        $this->actingAs($this->subscriber)
+            ->putJson(route('v1.reports.update', $reportId), $payload);
+
+        Event::assertDispatched(AnnualRevenueChanged::class);
+    });
+
+    it('should return a successful response if the report is updated', function () {
         $reportId = ['id' => $this->subscriber->reports[0]->id];
         $payload = [
             'trade_with_invoice' => 100000,
@@ -206,7 +223,11 @@ describe('Update Report', function() {
         $response = $this->actingAs($this->subscriber)
             ->putJson(route('v1.reports.update', $reportId), $payload);
 
-        Event::assertDispatched(AnnualRevenueChanged::class);
         $response->assertOk();
+        $response->assertJson(
+            fn (AssertableJson $json) => $json->where('user', $this->subscriber->id)
+                ->where('period', $this->subscriber->reports[0]->period)
+                ->etc()
+        );
     });
 });
