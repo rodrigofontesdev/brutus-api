@@ -15,10 +15,10 @@ class MeiCategoryFactory extends Factory
         return [
             'type' => fake()->randomElement(['MEI-GERAL', 'MEI-TAC']),
             'creation_date' => fake()->dateTimeBetween(
-                    startDate: Carbon::createFromDate(2023, 1, 25)->toDateString()
-                )
+                startDate: Carbon::createFromDate(2023, 1, 25)->toDateString()
+            )
                 ->format('Y-m-d'),
-            'table_a_excluded_after_032022' => false
+            'table_a_excluded_after_032022' => false,
         ];
     }
 
@@ -27,7 +27,7 @@ class MeiCategoryFactory extends Factory
         return $this->state(fn () => [
             'type' => 'MEI-TAC',
             'creation_date' => Carbon::createFromDate(2023, 1, 10)->format('Y-m-d'),
-            'table_a_excluded_after_032022' => false
+            'table_a_excluded_after_032022' => false,
         ]);
     }
 
@@ -36,7 +36,7 @@ class MeiCategoryFactory extends Factory
         return $this->state(fn () => [
             'type' => 'MEI-GERAL',
             'creation_date' => Carbon::createFromDate(2024, 1, 15)->format('Y-m-d'),
-            'table_a_excluded_after_032022' => false
+            'table_a_excluded_after_032022' => false,
         ]);
     }
 
@@ -45,7 +45,7 @@ class MeiCategoryFactory extends Factory
         return $this->state(fn () => [
             'type' => 'MEI-TAC',
             'creation_date' => Carbon::createFromDate(2022, 2, 13)->format('Y-m-d'),
-            'table_a_excluded_after_032022' => true
+            'table_a_excluded_after_032022' => true,
         ]);
     }
 }

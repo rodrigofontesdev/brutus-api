@@ -86,10 +86,7 @@ class UpdateReport extends Controller
 
             return $report;
         } catch (QueryException $error) {
-            throw new ApiErrorException(
-                message: self::class.':: Failed to update report in the database.',
-                previous: $error
-            );
+            throw new ApiErrorException(message: self::class.':: Failed to update report in the database.', previous: $error);
         }
     }
 }

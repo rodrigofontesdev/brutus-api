@@ -19,7 +19,7 @@ class Report extends Model
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<User, $this>
+     * @return BelongsTo<User, $this>
      */
     public function owner(): BelongsTo
     {
@@ -29,42 +29,42 @@ class Report extends Model
     protected function tradeWithInvoice(): Attribute
     {
         return Attribute::make(
-            set: fn (int $value) => $value === 0 ? null : $value,
+            set: fn (int $value) => 0 === $value ? null : $value,
         );
     }
 
     protected function tradeWithoutInvoice(): Attribute
     {
         return Attribute::make(
-            set: fn (int $value) => $value === 0 ? null : $value,
+            set: fn (int $value) => 0 === $value ? null : $value,
         );
     }
 
     protected function industryWithInvoice(): Attribute
     {
         return Attribute::make(
-            set: fn (int $value) => $value === 0 ? null : $value,
+            set: fn (int $value) => 0 === $value ? null : $value,
         );
     }
 
     protected function industryWithoutInvoice(): Attribute
     {
         return Attribute::make(
-            set: fn (int $value) => $value === 0 ? null : $value,
+            set: fn (int $value) => 0 === $value ? null : $value,
         );
     }
 
     protected function servicesWithInvoice(): Attribute
     {
         return Attribute::make(
-            set: fn (int $value) => $value === 0 ? null : $value,
+            set: fn (int $value) => 0 === $value ? null : $value,
         );
     }
 
     protected function servicesWithoutInvoice(): Attribute
     {
         return Attribute::make(
-            set: fn (int $value) => $value === 0 ? null : $value,
+            set: fn (int $value) => 0 === $value ? null : $value,
         );
     }
 }

@@ -25,7 +25,7 @@ class CompleteMonthlyReport extends Notification implements ShouldQueue
 
     public function toMail(): MailMessage
     {
-        return (new MailMessage)
+        return (new MailMessage())
                     ->subject('Não Deixe Seu Negócio Em Risco! Envie o Relatório Mensal')
                     ->greeting('Olá,')
                     ->line('The introduction to the notification.')

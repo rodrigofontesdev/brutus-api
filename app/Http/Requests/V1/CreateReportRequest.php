@@ -30,7 +30,7 @@ class CreateReportRequest extends FormRequest
             'period' => [
                 'required',
                 'date_format:Y-m-d',
-                Rule::unique('reports')->where('user', $this->user()->id)
+                Rule::unique('reports')->where('user', $this->user()->id),
             ],
         ];
     }

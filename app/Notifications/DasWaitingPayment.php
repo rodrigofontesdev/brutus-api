@@ -25,7 +25,7 @@ class DasWaitingPayment extends Notification implements ShouldQueue
 
     public function toMail(): MailMessage
     {
-        return (new MailMessage)
+        return (new MailMessage())
                     ->subject('Seu DAS MEI vence em breve – Evite multas!')
                     ->greeting('Olá,')
                     ->line('The introduction to the notification.')

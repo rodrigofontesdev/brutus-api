@@ -25,7 +25,7 @@ class SendDasnSimeiStatement extends Notification implements ShouldQueue
 
     public function toMail(): MailMessage
     {
-        return (new MailMessage)
+        return (new MailMessage())
                     ->subject('DASN-Simei pendente: Você pode pagar multa se não declarar a tempo')
                     ->greeting('Olá,')
                     ->line('The introduction to the notification.')

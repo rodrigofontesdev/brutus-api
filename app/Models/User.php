@@ -29,7 +29,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MagicLink, $this>
+     * @return HasMany<MagicLink, $this>
      */
     public function magicLinks(): HasMany
     {
@@ -37,7 +37,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<MagicLink, $this>
+     * @return HasOne<MagicLink, $this>
      */
     public function latestMagicLink(): HasOne
     {
@@ -45,7 +45,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Report, $this>
+     * @return HasMany<Report, $this>
      */
     public function reports(): HasMany
     {
@@ -53,7 +53,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<MeiCategory, $this>
+     * @return HasMany<MeiCategory, $this>
      */
     public function meiCategories(): HasMany
     {
@@ -61,7 +61,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<MeiCategory, $this>
+     * @return HasOne<MeiCategory, $this>
      */
     public function firstMeiCategory(): HasOne
     {
@@ -111,6 +111,6 @@ class User extends Authenticatable
 
     public function isSubscriber(): bool
     {
-        return $this->role === 'subscriber';
+        return 'subscriber' === $this->role;
     }
 }

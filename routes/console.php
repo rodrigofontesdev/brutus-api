@@ -51,9 +51,9 @@ Schedule::command('queue:monitor database:default --max=100')
         );
     });
 
-Schedule::call(function() {
-    User::subscriber()->chunk(500, function(Collection $subscribers) {
-        Notification::send($subscribers, new CompleteMonthlyReport);
+Schedule::call(function () {
+    User::subscriber()->chunk(500, function (Collection $subscribers) {
+        Notification::send($subscribers, new CompleteMonthlyReport());
     });
 })
 ->monthly()
@@ -66,9 +66,9 @@ Schedule::call(function() {
     );
 });
 
-Schedule::call(function() {
-    User::subscriber()->chunk(500, function(Collection $subscribers) {
-        Notification::send($subscribers, new DasWaitingPayment);
+Schedule::call(function () {
+    User::subscriber()->chunk(500, function (Collection $subscribers) {
+        Notification::send($subscribers, new DasWaitingPayment());
     });
 })
 ->monthlyOn(15, '07:00')
@@ -79,9 +79,9 @@ Schedule::call(function() {
     );
 });
 
-Schedule::call(function() {
-    User::subscriber()->chunk(500, function(Collection $subscribers) {
-        Notification::send($subscribers, new SendDasnSimeiStatement);
+Schedule::call(function () {
+    User::subscriber()->chunk(500, function (Collection $subscribers) {
+        Notification::send($subscribers, new SendDasnSimeiStatement());
     });
 })
 ->yearlyOn(1, 20, '08:00')

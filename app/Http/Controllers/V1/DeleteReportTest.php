@@ -62,7 +62,7 @@ describe('Delete Report', function () {
         $this->assertDatabaseMissing($report);
     });
 
-    it('should dispatch an event to notify that the annual revenue has changed', function() {
+    it('should dispatch an event to notify that the annual revenue has changed', function () {
         $report = Report::factory()->for($this->subscriber, 'owner')->create();
         $reportId = ['id' => $report->id];
 

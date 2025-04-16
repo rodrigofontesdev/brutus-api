@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Illuminate\Testing\Fluent\AssertableJson;
 
-describe('Update Report', function() {
+describe('Update Report', function () {
     beforeEach(function () {
         $this->subscriber = User::factory()->has(Report::factory())->create();
     });
@@ -171,7 +171,7 @@ describe('Update Report', function() {
         }
     );
 
-    it('should update the report in the database', function() {
+    it('should update the report in the database', function () {
         $reportId = ['id' => $this->subscriber->reports[0]->id];
         $payload = [
             'trade_with_invoice' => 100000,
@@ -190,7 +190,7 @@ describe('Update Report', function() {
         $this->assertModelExists($reportUpdated);
     });
 
-    it('should dispatch an event to notify that the annual revenue has changed', function() {
+    it('should dispatch an event to notify that the annual revenue has changed', function () {
         $reportId = ['id' => $this->subscriber->reports[0]->id];
         $payload = [
             'trade_with_invoice' => 100000,

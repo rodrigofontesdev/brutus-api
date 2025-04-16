@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Testing\Fluent\AssertableJson;
 
-describe('Create Report', function() {
+describe('Create Report', function () {
     beforeEach(function () {
         $this->subscriber = User::factory()->create();
     });
@@ -113,7 +113,7 @@ describe('Create Report', function() {
                 'industry_without_invoice' => 200000,
                 'services_with_invoice' => 0,
                 'services_without_invoice' => 0,
-                'period' => $period
+                'period' => $period,
             ];
 
             $response = $this->actingAs($this->subscriber)
@@ -125,7 +125,7 @@ describe('Create Report', function() {
     )->with(['January 1, 2025', '01-01-2025', '01/01/2025']);
 
     it('should return a bad request if the user attempts to create a report for a period that already exists',
-        function() {
+        function () {
             $report = Report::factory()->for($this->subscriber, 'owner')
                 ->onlyTradeInvoice()
                 ->state(['period' => '2025-01-01'])
@@ -137,7 +137,7 @@ describe('Create Report', function() {
                 'industry_without_invoice' => 200000,
                 'services_with_invoice' => 0,
                 'services_without_invoice' => 0,
-                'period' => $report->period
+                'period' => $report->period,
             ];
 
             $response = $this->actingAs($this->subscriber)
@@ -148,7 +148,7 @@ describe('Create Report', function() {
         }
     );
 
-    it('should create the report in the database if the fields are valid', function() {
+    it('should create the report in the database if the fields are valid', function () {
         $payload = [
             'trade_with_invoice' => 100000,
             'trade_without_invoice' => 50000,
@@ -156,7 +156,7 @@ describe('Create Report', function() {
             'industry_without_invoice' => 200000,
             'services_with_invoice' => 0,
             'services_without_invoice' => 0,
-            'period' => '2025-01-01'
+            'period' => '2025-01-01',
         ];
 
         $response = $this->actingAs($this->subscriber)
@@ -167,7 +167,7 @@ describe('Create Report', function() {
         $this->assertModelExists($reportCreated);
     });
 
-    it('should dispatch an event to notify that the annual revenue has changed', function() {
+    it('should dispatch an event to notify that the annual revenue has changed', function () {
         $payload = [
             'trade_with_invoice' => 100000,
             'trade_without_invoice' => 50000,
@@ -175,7 +175,7 @@ describe('Create Report', function() {
             'industry_without_invoice' => 200000,
             'services_with_invoice' => 0,
             'services_without_invoice' => 0,
-            'period' => '2025-01-01'
+            'period' => '2025-01-01',
         ];
 
         Event::fake();
@@ -193,7 +193,7 @@ describe('Create Report', function() {
             'industry_without_invoice' => 200000,
             'services_with_invoice' => 0,
             'services_without_invoice' => 0,
-            'period' => '2025-01-01'
+            'period' => '2025-01-01',
         ];
 
         $response = $this->actingAs($this->subscriber)

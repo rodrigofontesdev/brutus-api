@@ -43,7 +43,7 @@ class CreateReport extends Controller
     private function createReportInDatabase(ValidatedInput $data): Report
     {
         try {
-            $report = new Report;
+            $report = new Report();
             $report->user = Auth::id();
             $report->trade_with_invoice = (int) $data->trade_with_invoice;
             $report->trade_without_invoice = (int) $data->trade_without_invoice;
@@ -61,10 +61,7 @@ class CreateReport extends Controller
 
             return $report;
         } catch (QueryException $error) {
-            throw new ApiErrorException(
-                message: self::class.':: Failed to create new report in the database.',
-                previous: $error
-            );
+            throw new ApiErrorException(message: self::class.':: Failed to create new report in the database.', previous: $error);
         }
     }
 }
