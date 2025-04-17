@@ -11,4 +11,9 @@ class MeiCategoryPolicy
     {
         return $user->id === $category->user;
     }
+
+    public function delete(User $user, MeiCategory $category): bool
+    {
+        return $user->id === $category->user;
+    }
 }
