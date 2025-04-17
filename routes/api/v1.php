@@ -4,6 +4,7 @@ use App\Http\Controllers\V1\Authenticate;
 use App\Http\Controllers\V1\CreateReport;
 use App\Http\Controllers\V1\DeleteReport;
 use App\Http\Controllers\V1\DeleteSubscriber;
+use App\Http\Controllers\V1\GetMeiCategories;
 use App\Http\Controllers\V1\GetReport;
 use App\Http\Controllers\V1\GetReports;
 use App\Http\Controllers\V1\GetSubscriber;
@@ -42,6 +43,10 @@ Route::name('v1.')
         Route::delete('/subscribers/{id}', DeleteSubscriber::class)
             ->middleware('auth:sanctum')
             ->name('subscribers.delete');
+
+        Route::get('/mei-categories', GetMeiCategories::class)
+            ->middleware('auth:sanctum')
+            ->name('mei-categories.index');
 
         Route::get('/reports', GetReports::class)
             ->middleware('auth:sanctum')

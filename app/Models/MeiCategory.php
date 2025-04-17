@@ -23,6 +23,7 @@ class MeiCategory extends Model
 
     protected $guarded = [
         'user',
+        'creation_date',
     ];
 
     /**
