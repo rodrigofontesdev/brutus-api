@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\V1\Authenticate;
+use App\Http\Controllers\V1\CreateMeiCategory;
 use App\Http\Controllers\V1\CreateReport;
 use App\Http\Controllers\V1\DeleteReport;
 use App\Http\Controllers\V1\DeleteSubscriber;
@@ -52,6 +53,10 @@ Route::name('v1.')
         Route::get('/mei-categories/{id}', GetMeiCategory::class)
             ->middleware('auth:sanctum')
             ->name('mei-categories.show');
+
+        Route::post('/mei-categories', CreateMeiCategory::class)
+            ->middleware('auth:sanctum')
+            ->name('mei-categories.create');
 
         Route::get('/reports', GetReports::class)
             ->middleware('auth:sanctum')
