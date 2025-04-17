@@ -45,7 +45,7 @@ class ReportFactory extends Factory
             ),
             'period' => fake()
                 ->dateTimeBetween(
-                    startDate: Carbon::today()->subYear()->setDay(1)->setMonth(1)->toDateString(),
+                    startDate: Carbon::today()->subYears(2)->startOfYear()->toDateString(),
                     endDate: '-1 month'
                 )
                 ->format('Y-m-d'),

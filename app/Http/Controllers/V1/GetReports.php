@@ -19,17 +19,23 @@ class GetReports extends Controller
         Log::info(self::class.':: Starting to fetch subscriber reports.');
     }
 
+    /**
+     * @throws \Illuminate\Database\QueryException
+     */
     public function __invoke(GetReportsRequest $request): JsonResponse
     {
         try {
             $year = $request->query('year');
+            $order = $request->query('order') ?? 'desc';
+            $perPage = $request->query('perPage') ?? 12;
 
             $reports = Report::where('user', $request->user()->id)
                 ->when($year, function (Builder $query, string $year) {
                     $query->whereYear('period', $year);
                 })
-                ->orderByDesc('period')
-                ->cursorPaginate(12);
+                ->orderBy('period', $order)
+                ->orderBy('id')
+                ->cursorPaginate($perPage);
 
             Log::info(
                 self::class.':: Finishing to fetch subscriber reports.',

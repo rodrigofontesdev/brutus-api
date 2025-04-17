@@ -5,20 +5,21 @@ namespace App\Http\Requests\V1;
 use App\Exceptions\V1\InvalidRequestException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class GetReportsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return Auth::check() && $this->user()->isSubscriber();
+        return true;
     }
 
     protected function prepareForValidation(): void
     {
         $this->merge([
             'year' => $this->query('year'),
+            'order' => $this->query('order'),
+            'perPage' => $this->query('perPage'),
         ]);
     }
 
@@ -29,6 +30,8 @@ class GetReportsRequest extends FormRequest
     {
         return [
             'year' => ['date_format:Y', 'nullable'],
+            'order' => ['in:asc,desc', 'nullable'],
+            'perPage' => ['integer', 'nullable'],
         ];
     }
 
@@ -52,6 +55,7 @@ class GetReportsRequest extends FormRequest
     {
         return [
             'year.date_format' => 'The year param must match the format YYYY.',
+            'order.in' => 'The order param must be asc or desc.',
         ];
     }
 }

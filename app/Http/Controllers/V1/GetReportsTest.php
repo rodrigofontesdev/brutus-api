@@ -2,6 +2,7 @@
 
 use App\Models\Report;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Testing\Fluent\AssertableJson;
 
 describe('Get Reports', function () {
@@ -36,7 +37,7 @@ describe('Get Reports', function () {
         }
     );
 
-    it('should return subscriber\'s reports list', function () {
+    it('should return subscriber\'s report list', function () {
         $subscriber = User::factory()->has(Report::factory()->count(12))->create();
 
         $response = $this->actingAs($subscriber)->getJson($this->route);
@@ -52,7 +53,7 @@ describe('Get Reports', function () {
         );
     });
 
-    it('should return subscriber\'s reports list filtered by year', function () {
+    it('should return subscriber\'s report list filtered by year', function () {
         $subscriber = User::factory()->has(Report::factory()->count(12))->create();
         $previousYear = today()->subYear();
 
@@ -69,6 +70,63 @@ describe('Get Reports', function () {
                 )
             )->etc()
         );
+    });
+
+    it('should return the subscriber\'s report list ordered by newest first', function () {
+        $this->freezeTime(function() {
+            $subscriber = User::factory()
+                ->has(Report::factory()
+                    ->count(2)
+                    ->sequence(
+                        ['period' => Carbon::createFromDate(2025, 1, 1)],
+                        ['period' => Carbon::createFromDate(2025, 2, 1)],
+                    )
+                )->create();
+
+            $response = $this->actingAs($subscriber)->getJson("{$this->route}?order=desc");
+
+            $response->assertOk();
+            $response->assertJson(fn (AssertableJson $json) =>
+                $json->has('data.0', fn(AssertableJson $json) =>
+                    $json->where('user', $subscriber->id)
+                        ->where('period', Carbon::createFromDate(2025, 2, 1)->toDateTimeString())
+                        ->etc()
+                )->etc()
+            );
+        });
+    });
+
+    it('should return the subscriber\'s report list ordered by oldest first', function () {
+        $this->freezeTime(function() {
+            $subscriber = User::factory()
+                ->has(Report::factory()
+                    ->count(2)
+                    ->sequence(
+                        ['period' => Carbon::createFromDate(2025, 1, 1)],
+                        ['period' => Carbon::createFromDate(2025, 2, 1)],
+                    )
+                )->create();
+
+            $response = $this->actingAs($subscriber)->getJson("{$this->route}?order=asc");
+
+            $response->assertOk();
+            $response->assertJson(fn (AssertableJson $json) =>
+                $json->has('data.0', fn(AssertableJson $json) =>
+                    $json->where('user', $subscriber->id)
+                        ->where('period', Carbon::createFromDate(2025, 1, 1)->toDateTimeString())
+                        ->etc()
+                )->etc()
+            );
+        });
+    });
+
+    it('should return the correct number of reports per page for the subscriber', function () {
+        $subscriber = User::factory()->has(Report::factory()->count(12))->create();
+
+        $response = $this->actingAs($subscriber)->getJson("{$this->route}?perPage=6");
+
+        $response->assertOk();
+        $response->assertJsonCount(6, 'data');
     });
 
     it('should navigate to the next page', function () {
