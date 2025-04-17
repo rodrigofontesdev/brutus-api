@@ -22,6 +22,7 @@ class UserResource extends JsonResource
             'city' => $this->city,
             'state' => $this->state,
             'secret_word' => $this->secret_word,
+            'opening_date' => MeiCategoryResource::make($this->firstMeiCategory),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
