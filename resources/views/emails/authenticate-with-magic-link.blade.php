@@ -1,16 +1,25 @@
 <x-mail::message>
+@empty(!$secretWord)
 <x-mail::panel>
-    **{{$secretWord}}**
+**{{$secretWord}}**
 </x-mail::panel>
+@endempty
 
-# Access Your Account
+# Seu acesso ao {{ config('app.name') }} chegou!
 
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum quo deserunt blanditiis nesciunt labore, dolor illo alias tempora provident!
+Recebemos uma solicitação para acessar sua conta na plataforma {{ config('app.name') }}. Para garantir a segurança dos seus dados e facilitar seu acesso, enviamos um link temporário e exclusivo.
 
 <x-mail::button :url="$link">
-Access my account
+Acessar Conta
 </x-mail::button>
 
-Thanks,<br>
-{{ config('app.name') }}
+**Importante:** Este link é único e possui tempo para expirar. Ele é a chave para acessar sua área exclusiva na plataforma.
+
+Se o link expirou você pode solicitar um novo na página de login.
+
+<br>
+Atenciosamente,
+
+**Equipe Brutus**<br>
+_Simplificando a vida do MEI_
 </x-mail::message>

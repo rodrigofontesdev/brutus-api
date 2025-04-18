@@ -15,7 +15,7 @@ class AuthenticateWithMagickLink extends Mailable implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public $tries = 3;
+    public $tries = 2;
 
     public function __construct(private User $subscriber)
     {
@@ -25,7 +25,7 @@ class AuthenticateWithMagickLink extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Access Your Account',
+            subject: 'Seu Link Para Acessar o ' . config('app.name'),
         );
     }
 

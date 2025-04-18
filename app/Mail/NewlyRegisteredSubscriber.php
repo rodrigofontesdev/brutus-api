@@ -15,7 +15,7 @@ class NewlyRegisteredSubscriber extends Mailable implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public $tries = 3;
+    public $tries = 2;
 
     public function __construct(private MagicLink $magicLink)
     {
@@ -25,7 +25,7 @@ class NewlyRegisteredSubscriber extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Account Created Successfuly',
+            subject: 'Bem-vindo(a) ao ' . config('app.name') . '! Acesse Sua Conta',
         );
     }
 
