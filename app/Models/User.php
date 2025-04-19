@@ -68,6 +68,13 @@ class User extends Authenticatable
         return $this->hasOne(MeiCategory::class, 'user', 'id')->oldest('creation_date');
     }
 
+    protected function firstName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => Str::before($this->full_name, ' ')
+        );
+    }
+
     protected function cnpj(): Attribute
     {
         return Attribute::make(
