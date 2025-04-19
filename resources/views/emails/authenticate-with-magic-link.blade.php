@@ -17,9 +17,10 @@ Acessar Conta
 
 Se o link expirou você pode solicitar um novo na página de login.
 
-<br>
+<x-mail::subcopy>
 Atenciosamente,
 
 **Equipe Brutus**<br>
 _Simplificando a vida do MEI_
+</x-mail::subcopy>
 </x-mail::message>

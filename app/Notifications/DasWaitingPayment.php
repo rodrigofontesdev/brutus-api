@@ -6,14 +6,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class DasWaitingPayment extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    public function __construct()
-    {
-    }
 
     /**
      * @return array<int, string>
@@ -23,12 +21,20 @@ class DasWaitingPayment extends Notification implements ShouldQueue
         return ['mail'];
     }
 
-    public function toMail(): MailMessage
+    public function toMail(object $notifiable): MailMessage
     {
+        $period = Carbon::now()->locale('pt_BR')->isoFormat('MMMM [de] Y');
+
         return (new MailMessage())
-                    ->subject('Seu DAS MEI vence em breve – Evite multas!')
-                    ->greeting('Olá,')
-                    ->line('The introduction to the notification.')
-                    ->line('Thank you for using our application!');
+            ->subject('Seu DAS MEI Vence em Breve – Evite Multas!')
+            ->markdown(
+                'emails.das-waiting-payment',
+                [
+                    'firstName' => $notifiable->firstName,
+                    'period' => Str::ucfirst($period),
+                    'link' => 'https://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/pgmei.app/Identificacao',
+                    'secretWord' => $notifiable->secret_word,
+                ]
+            );
     }
 }

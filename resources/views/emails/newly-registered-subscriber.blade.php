@@ -11,9 +11,10 @@ Acessar Conta
 
 **Importante:** Este link só pode ser usado uma vez e expira em alguns minutos. Se ele expirar, é só pedir um novo pela nossa página de login.
 
-<br>
+<x-mail::subcopy>
 Atenciosamente,
 
 **Equipe Brutus**<br>
 _Simplificando a vida do MEI_
+</x-mail::subcopy>
 </x-mail::message>

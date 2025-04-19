@@ -71,7 +71,7 @@ Schedule::call(function () {
         Notification::send($subscribers, new DasWaitingPayment());
     });
 })
-->monthlyOn(15, '07:00')
+->monthlyOn(10, '07:00')
 ->onFailure(function (Stringable $output) {
     Log::warning(
         'Schedule:: Remind subscribers to pay the DAS was not possible.',
@@ -84,7 +84,7 @@ Schedule::call(function () {
         Notification::send($subscribers, new SendDasnSimeiStatement());
     });
 })
-->yearlyOn(1, 20, '08:00')
+->yearlyOn(2, 1, '07:00')
 ->onFailure(function (Stringable $output) {
     Log::warning(
         'Schedule:: Remind subscribers to send the DASN-SIMEI was not possible.',

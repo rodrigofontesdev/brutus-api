@@ -11,10 +11,6 @@ class SendDasnSimeiStatement extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct()
-    {
-    }
-
     /**
      * @return array<int, string>
      */
@@ -23,12 +19,20 @@ class SendDasnSimeiStatement extends Notification implements ShouldQueue
         return ['mail'];
     }
 
-    public function toMail(): MailMessage
+    public function toMail(object $notifiable): MailMessage
     {
+        $period = today()->subYear()->format('Y');
+
         return (new MailMessage())
-                    ->subject('DASN-Simei pendente: Você pode pagar multa se não declarar a tempo')
-                    ->greeting('Olá,')
-                    ->line('The introduction to the notification.')
-                    ->line('Thank you for using our application!');
+            ->subject('Prazo Final Para Entregar o DASN-SIMEI de ' . $period . ' se Aproxima!')
+            ->markdown(
+                'emails.send-dasn-simei-statement',
+                [
+                    'firstName' => $notifiable->firstName,
+                    'period' => $period,
+                    'link' => 'https://www8.receita.fazenda.gov.br/SimplesNacional/Aplicacoes/ATSPO/dasnsimei.app/Identificacao',
+                    'secretWord' => $notifiable->secret_word,
+                ]
+            );
     }
 }

@@ -6,14 +6,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class CompleteMonthlyReport extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    public function __construct()
-    {
-    }
 
     /**
      * @return array<int, string>
@@ -23,13 +21,20 @@ class CompleteMonthlyReport extends Notification implements ShouldQueue
         return ['mail'];
     }
 
-    public function toMail(): MailMessage
+    public function toMail(object $notifiable): MailMessage
     {
+        $period = Carbon::now()->subMonth()->locale('pt_BR')->isoFormat('MMMM [de] Y');
+
         return (new MailMessage())
-                    ->subject('Não Deixe Seu Negócio Em Risco! Envie o Relatório Mensal')
-                    ->greeting('Olá,')
-                    ->line('The introduction to the notification.')
-                    ->action('Preencher Relatório Mensal', config('app.client.url'))
-                    ->line('Thank you for using our application!');
+            ->subject('Não Esqueça de Criar o Relatório Mensal do MEI!')
+            ->markdown(
+                'emails.complete-monthly-report',
+                [
+                    'firstName' => $notifiable->firstName,
+                    'period' => Str::ucfirst($period),
+                    'link' => config('app.client.url'),
+                    'secretWord' => $notifiable->secret_word,
+                ]
+            );
     }
 }
