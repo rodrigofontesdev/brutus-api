@@ -44,7 +44,7 @@ class MagicLink extends Model
         $redirectUrl = config('app.client.redirect');
         $token = $this->token;
 
-        return "{$hostUrl}/authenticate/{$token}&redirect={$redirectUrl}";
+        return "{$hostUrl}/authenticate/{$token}?redirect={$redirectUrl}";
     }
 
     public function isUsed(): bool
