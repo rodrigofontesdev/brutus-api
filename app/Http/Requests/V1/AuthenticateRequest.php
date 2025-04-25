@@ -21,7 +21,7 @@ class AuthenticateRequest extends FormRequest
     {
         return [
             'token' => ['required', 'uuid:4', 'exists:magic_links,token'],
-            'redirect' => ['url:https'],
+            'redirect' => ['url:http,https'],
         ];
     }
 

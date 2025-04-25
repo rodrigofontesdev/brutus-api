@@ -19,7 +19,7 @@ describe('Authenticate', function () {
     });
 
     it('should return a bad request for invalid redirect URL', function () {
-        $redirectTo = ['redirect' => 'http://example.com'];
+        $redirectTo = ['redirect' => 'example.com'];
 
         $response = $this->postJson($this->route, $redirectTo);
 
