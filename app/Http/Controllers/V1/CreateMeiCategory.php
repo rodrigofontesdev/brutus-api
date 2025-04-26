@@ -45,7 +45,7 @@ class CreateMeiCategory extends Controller
             $category->type = $data->type;
             $category->creation_date = Carbon::parse($data->creation_date)->format('Y-m-d');
 
-            if($data->filled('table_a_excluded_after_032022')) {
+            if ($data->filled('table_a_excluded_after_032022')) {
                 $category->table_a_excluded_after_032022 = $data->table_a_excluded_after_032022;
             }
 

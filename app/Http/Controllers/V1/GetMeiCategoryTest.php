@@ -4,7 +4,7 @@ use App\Models\MeiCategory;
 use App\Models\User;
 use Illuminate\Support\Str;
 
-describe('Get MEI Category', function() {
+describe('Get MEI Category', function () {
     beforeEach(function () {
         $this->subscriber = User::factory()->create();
     });

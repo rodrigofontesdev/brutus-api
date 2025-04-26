@@ -4,7 +4,7 @@ use App\Models\MeiCategory;
 use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 
-describe('Create MEI Category', function() {
+describe('Create MEI Category', function () {
     beforeEach(function () {
         $this->subscriber = User::factory()->create();
     });
@@ -26,7 +26,7 @@ describe('Create MEI Category', function() {
         ]);
     });
 
-    it('should return a bad request if type field has a wrong value', function() {
+    it('should return a bad request if type field has a wrong value', function () {
         $payload = ['type' => 'MEI-NOITE'];
 
         $response = $this->actingAs($this->subscriber)
@@ -68,7 +68,7 @@ describe('Create MEI Category', function() {
                 ->create();
             $payload = [
                 'type' => 'MEI-GERAL',
-                'creation_date' => $category->creation_date
+                'creation_date' => $category->creation_date,
             ];
 
             $response = $this->actingAs($this->subscriber)
@@ -82,7 +82,7 @@ describe('Create MEI Category', function() {
     it('should create the category in the database if the fields are valid', function () {
         $payload = [
             'type' => 'MEI-GERAL',
-            'creation_date' => '2022-01-01'
+            'creation_date' => '2022-01-01',
         ];
 
         $response = $this->actingAs($this->subscriber)
@@ -96,7 +96,7 @@ describe('Create MEI Category', function() {
     it('should return a successful response if the report is created', function () {
         $payload = [
             'type' => 'MEI-GERAL',
-            'creation_date' => '2022-01-01'
+            'creation_date' => '2022-01-01',
         ];
 
         $response = $this->actingAs($this->subscriber)

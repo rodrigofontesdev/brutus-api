@@ -73,7 +73,7 @@ describe('Get Reports', function () {
     });
 
     it('should return the subscriber\'s report list ordered by newest first', function () {
-        $this->freezeTime(function() {
+        $this->freezeTime(function () {
             $subscriber = User::factory()
                 ->has(Report::factory()
                     ->count(2)
@@ -87,7 +87,7 @@ describe('Get Reports', function () {
 
             $response->assertOk();
             $response->assertJson(fn (AssertableJson $json) =>
-                $json->has('data.0', fn(AssertableJson $json) =>
+                $json->has('data.0', fn (AssertableJson $json) =>
                     $json->where('user', $subscriber->id)
                         ->where('period', Carbon::createFromDate(2025, 2, 1)->toDateTimeString())
                         ->etc()
@@ -97,7 +97,7 @@ describe('Get Reports', function () {
     });
 
     it('should return the subscriber\'s report list ordered by oldest first', function () {
-        $this->freezeTime(function() {
+        $this->freezeTime(function () {
             $subscriber = User::factory()
                 ->has(Report::factory()
                     ->count(2)
@@ -111,7 +111,7 @@ describe('Get Reports', function () {
 
             $response->assertOk();
             $response->assertJson(fn (AssertableJson $json) =>
-                $json->has('data.0', fn(AssertableJson $json) =>
+                $json->has('data.0', fn (AssertableJson $json) =>
                     $json->where('user', $subscriber->id)
                         ->where('period', Carbon::createFromDate(2025, 1, 1)->toDateTimeString())
                         ->etc()

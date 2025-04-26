@@ -24,7 +24,7 @@ class SendDasnSimeiStatement extends Notification implements ShouldQueue
         $period = today()->subYear()->format('Y');
 
         return (new MailMessage())
-            ->subject('Prazo Final Para Entregar o DASN-SIMEI de ' . $period . ' se Aproxima!')
+            ->subject('Prazo Final Para Entregar o DASN-SIMEI de '.$period.' se Aproxima!')
             ->markdown(
                 'emails.send-dasn-simei-statement',
                 [

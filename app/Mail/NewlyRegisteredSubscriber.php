@@ -25,7 +25,7 @@ class NewlyRegisteredSubscriber extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Bem-vindo(a) ao ' . config('app.name') . '! Acesse Sua Conta',
+            subject: 'Bem-vindo(a) ao '.config('app.name').'! Acesse Sua Conta',
         );
     }
 

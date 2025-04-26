@@ -5,7 +5,7 @@ use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Testing\Fluent\AssertableJson;
 
-describe('Get MEI Categories', function() {
+describe('Get MEI Categories', function () {
     beforeEach(function () {
         $this->route = route('v1.mei-categories.index');
     });
@@ -68,7 +68,7 @@ describe('Get MEI Categories', function() {
     });
 
     it('should return the subscriber\'s MEI category list ordered by newest first', function () {
-        $this->freezeTime(function() {
+        $this->freezeTime(function () {
             $subscriber = User::factory()
             ->has(MeiCategory::factory()
                 ->count(2)
@@ -82,7 +82,7 @@ describe('Get MEI Categories', function() {
 
             $response->assertOk();
             $response->assertJson(fn (AssertableJson $json) =>
-                $json->has('data.0', fn(AssertableJson $json) =>
+                $json->has('data.0', fn (AssertableJson $json) =>
                     $json->where('user', $subscriber->id)
                         ->where('creation_date', Carbon::createFromDate(2022, 3, 31)->toDateTimeString())
                         ->etc()
@@ -92,7 +92,7 @@ describe('Get MEI Categories', function() {
     });
 
     it('should return the subscriber\'s MEI category list ordered by oldest first', function () {
-        $this->freezeTime(function() {
+        $this->freezeTime(function () {
             $subscriber = User::factory()
             ->has(MeiCategory::factory()
                 ->count(2)
@@ -106,7 +106,7 @@ describe('Get MEI Categories', function() {
 
             $response->assertOk();
             $response->assertJson(fn (AssertableJson $json) =>
-                $json->has('data.0', fn(AssertableJson $json) =>
+                $json->has('data.0', fn (AssertableJson $json) =>
                     $json->where('user', $subscriber->id)
                         ->where('creation_date', Carbon::createFromDate(2020, 6, 1)->toDateTimeString())
                         ->etc()

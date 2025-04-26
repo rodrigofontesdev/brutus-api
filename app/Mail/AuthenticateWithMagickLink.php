@@ -25,7 +25,7 @@ class AuthenticateWithMagickLink extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Seu Link Para Acessar o ' . config('app.name'),
+            subject: 'Seu Link Para Acessar o '.config('app.name'),
         );
     }
 

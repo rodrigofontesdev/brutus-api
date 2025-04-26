@@ -4,7 +4,7 @@ use App\Models\MeiCategory;
 use App\Models\User;
 use Illuminate\Support\Str;
 
-describe('Delete Mei Category', function() {
+describe('Delete Mei Category', function () {
     beforeEach(function () {
         $this->subscriber = User::factory()->create();
     });

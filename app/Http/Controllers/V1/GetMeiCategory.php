@@ -25,7 +25,6 @@ class GetMeiCategory extends Controller
      * @throws App\Exceptions\V1\InvalidRequestException
      * @throws App\Exceptions\V1\NotFoundException
      * @throws App\Exceptions\V1\AuthorizationException
-     *
      */
     public function __invoke(Request $request, string $id): JsonResponse
     {

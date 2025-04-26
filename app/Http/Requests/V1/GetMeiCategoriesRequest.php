@@ -34,7 +34,7 @@ class GetMeiCategoriesRequest extends FormRequest
     }
 
     /**
-     * @throws \App\Exceptions\V1\InvalidRequestException
+     * @throws InvalidRequestException
      */
     protected function failedValidation(Validator $validator): void
     {

@@ -20,7 +20,7 @@ class GetReports extends Controller
     }
 
     /**
-     * @throws \Illuminate\Database\QueryException
+     * @throws QueryException
      */
     public function __invoke(GetReportsRequest $request): JsonResponse
     {

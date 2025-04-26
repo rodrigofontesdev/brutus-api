@@ -24,7 +24,7 @@ class CreateMeiCategoryRequest extends FormRequest
         return [
             'type' => [
                 'required',
-                Rule::in([MeiCategory::GERAL, MeiCategory::TAC])
+                Rule::in([MeiCategory::GERAL, MeiCategory::TAC]),
             ],
             'creation_date' => [
                 'required',
