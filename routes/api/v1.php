@@ -11,6 +11,7 @@ use App\Http\Controllers\V1\GetMeiCategory;
 use App\Http\Controllers\V1\GetReport;
 use App\Http\Controllers\V1\GetReports;
 use App\Http\Controllers\V1\GetSubscriber;
+use App\Http\Controllers\V1\Me;
 use App\Http\Controllers\V1\SignIn;
 use App\Http\Controllers\V1\SignOut;
 use App\Http\Controllers\V1\SignUp;
@@ -30,6 +31,10 @@ Route::name('v1.')
 
         Route::post('/authenticate', Authenticate::class)
             ->name('authenticate');
+
+        Route::get('/me', Me::class)
+            ->middleware('auth:sanctum')
+            ->name('me');
 
         Route::post('/sign-out', SignOut::class)
             ->middleware('auth:sanctum')

@@ -26,6 +26,7 @@ class User extends Authenticatable
         'email',
         'mobile_phone',
         'secret_word',
+        'firstMeiCategory',
     ];
 
     /**
