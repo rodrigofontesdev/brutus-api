@@ -35,6 +35,17 @@ describe('Sign In', function () {
         $response->assertSee('The cnpj provided does not matches to any user.');
     });
 
+    it('should return a bad request if CNPJ belongs to a soft deleted user', function () {
+        $subscriber = User::factory()->create();
+        $subscriber->delete();
+        $credential = ['cnpj' => $subscriber->cnpj];
+
+        $response = $this->postJson($this->route, $credential);
+
+        $response->assertBadRequest();
+        $response->assertSee('The cnpj provided does not matches to any user.');
+    });
+
     it('should limit the maximum number of requests per hour', function () {
         $maxLimit = 5;
 

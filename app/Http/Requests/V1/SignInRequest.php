@@ -28,7 +28,7 @@ class SignInRequest extends FormRequest
                 'size:14',
                 Rule::exists('users')->where(function (Builder $query) {
                     $query->where('role', 'subscriber');
-                }),
+                })->withoutTrashed(),
             ],
         ];
     }
